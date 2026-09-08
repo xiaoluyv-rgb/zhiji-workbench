@@ -64,6 +64,7 @@ import {
   getFeishuSource,
   listFeishuMaterials,
   loadFeishuSources,
+  probeFeishuAuth,
 } from "./feishu.mjs";
 import {
   getWikiSources,
@@ -2338,6 +2339,13 @@ export function workbenchApiPlugin({
           }
 
           // ---- 飞书知识库（实时挂载，不落地） ----
+          // /api/feishu/status：在请求业务方法之前快速探测 lark-cli user 身份是否 ready
+          // （避免「新机器同事连车型资料库」时撞 12s AbortController 才发现是「飞书未登录」）。
+          if (req.method === "GET" && url.pathname === "/api/feishu/status") {
+            const auth = await probeFeishuAuth();
+            return json(res, 200, auth);
+          }
+
           if (req.method === "GET" && url.pathname === "/api/feishu/sources") {
             const sources = loadFeishuSources().filter((source) => source.enabled !== false);
             return json(res, 200, { items: sources });
@@ -2352,6 +2360,11 @@ export function workbenchApiPlugin({
               const payload = await listFeishuMaterials(sourceId, { force: url.searchParams.has("force") });
               return json(res, 200, payload);
             } catch (error) {
+              if (error?.code === "FEISHU_AUTH_REQUIRED") {
+                return json(res, 401, {
+                  error: { code: "FEISHU_AUTH_REQUIRED", message: error.message, hint: "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。" },
+                });
+              }
               return json(res, 502, {
                 error: { code: "FEISHU_LIST_FAILED", message: error.message || "飞书列表获取失败" },
               });
@@ -2365,6 +2378,11 @@ export function workbenchApiPlugin({
               const doc = await fetchFeishuDocument(nodeToken);
               return json(res, 200, doc);
             } catch (error) {
+              if (error?.code === "FEISHU_AUTH_REQUIRED") {
+                return json(res, 401, {
+                  error: { code: "FEISHU_AUTH_REQUIRED", message: error.message, hint: "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。" },
+                });
+              }
               return json(res, 502, {
                 error: { code: "FEISHU_FETCH_FAILED", message: error.message || "飞书文档获取失败" },
               });
@@ -2382,6 +2400,11 @@ export function workbenchApiPlugin({
               const kbTree = await getWikiTree(kbSource);
               return json(res, 200, { sourceId: kbSource, tree: kbTree, syncedAt: Date.now() });
             } catch (error) {
+              if (error?.code === "FEISHU_AUTH_REQUIRED") {
+                return json(res, 401, {
+                  error: { code: "FEISHU_AUTH_REQUIRED", message: error.message, hint: "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。" },
+                });
+              }
               return json(res, 502, { error: { code: "FEISHU_KB_TREE_FAILED", message: error.message } });
             }
           }
@@ -2392,6 +2415,11 @@ export function workbenchApiPlugin({
               const kbDoc = await getWikiDocMarkdown(kbObj);
               return json(res, 200, kbDoc);
             } catch (error) {
+              if (error?.code === "FEISHU_AUTH_REQUIRED") {
+                return json(res, 401, {
+                  error: { code: "FEISHU_AUTH_REQUIRED", message: error.message, hint: "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。" },
+                });
+              }
               return json(res, 502, { error: { code: "FEISHU_KB_DOC_FAILED", message: error.message } });
             }
           }
@@ -2413,10 +2441,25 @@ export function workbenchApiPlugin({
             try {
               const wantSync = url.searchParams.get("sync") === "1";
               if (wantSync) {
-                // 后台异步刷新，不阻塞本次响应（避免页面加载被飞书重扫阻塞而超时）
+                // 后台异步刷新，不阻塞本次响应（避免页面加载被飞书重扫阻塞而超时）。
+                // 但先用 probeFeishuAuth 在主请求里快速判断 lark-cli user 是否就绪：
+                // 没登录时直接返回 401，让前端引导登录，避免后台 microtask 一直挂死。
+                const auth = await probeFeishuAuth();
+                if (!auth.ready) {
+                  return json(res, 401, {
+                    error: {
+                      code: "FEISHU_AUTH_REQUIRED",
+                      message: auth.message,
+                      hint: auth.hint || "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。",
+                      auth,
+                    },
+                  });
+                }
                 queueMicrotask(async () => {
                   try { await refreshFeishuMaterials(); }
-                  catch (e) { console.warn(`[car-reference] 飞书重新发现失败，使用已有镜像: ${e.message}`); }
+                  catch (e) {
+                    console.warn(`[car-reference] 飞书重新发现失败，使用已有镜像: ${e.message}`);
+                  }
                 });
               } else {
                 await ensureFeishuMaterials();
@@ -2425,6 +2468,15 @@ export function workbenchApiPlugin({
               if (!payload) throw new Error("尚未生成飞书镜像，当前无法展示车型参考图。");
               return json(res, 200, payload);
             } catch (error) {
+              if (error?.code === "FEISHU_AUTH_REQUIRED") {
+                return json(res, 401, {
+                  error: {
+                    code: "FEISHU_AUTH_REQUIRED",
+                    message: error.message,
+                    hint: "请先在本机终端运行 lark-cli auth login，再回到工作台点击「重试」。",
+                  },
+                });
+              }
               return json(res, 500, {
                 error: { code: "CAR_REFERENCE_FAILED", message: error.message || "参考图读取失败" },
               });

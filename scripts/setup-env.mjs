@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 // 首次配置向导：引导使用者填写 DeepSeek Key 与共享知识库路径，生成 .env。
+// 顺便探测本机飞书（lark-cli）是否已登录，未登录时打印明确引导。
 // 用法：
 //   node scripts/setup-env.mjs                  # 交互式
 //   node scripts/setup-env.mjs --non-interactive  # 从环境变量 DEEPSEEK_API_KEY / SHARED_VAULT_ROOT 读取
 import { createInterface } from "node:readline/promises";
 import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { spawn } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +20,69 @@ const DEFAULTS = {
   OPENAI_MODEL: "deepseek-chat",
   PERSONAL_DASHBOARD_VAULT_ROOT: path.join(root, "..", "个人知识库"),
 };
+
+// 探测本机 lark-cli 安装位置
+function resolveLarkCli() {
+  const home = os.homedir();
+  const candidates = [
+    path.join(
+      home,
+      ".workbuddy/binaries/node/cli-connector-packages/node_modules/@larksuite/cli/bin/lark-cli.exe",
+    ),
+  ];
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function probeFeishuAuth() {
+  return new Promise((resolve) => {
+    const larkCli = resolveLarkCli();
+    if (!larkCli) {
+      resolve({ available: false, ready: false, reason: "missing-cli", message: "未找到 lark-cli 可执行文件。" });
+      return;
+    }
+    const env = { ...process.env, NO_PROXY: "*", LARKSUITE_CLI_NO_UPDATE_NOTIFIER: "1", LARKSUITE_CLI_NO_SKILLS_NOTIFIER: "1" };
+    for (const key of ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "all_proxy", "no_proxy"]) {
+      delete env[key];
+    }
+    env.NO_PROXY = "*";
+    const child = spawn(larkCli, ["auth", "status", "--json"], { env, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
+    let out = "";
+    let err = "";
+    child.stdout.on("data", (c) => { out += c; });
+    child.stderr.on("data", (c) => { err += c; });
+    const t = setTimeout(() => { child.kill("SIGKILL"); resolve({ available: true, ready: false, reason: "timeout", message: "lark-cli 状态探测超时" }); }, 8000);
+    child.on("close", (code) => {
+      clearTimeout(t);
+      const body = (out || err).trim();
+      try {
+        const start = body.indexOf("{");
+        const end = body.lastIndexOf("}");
+        const json = JSON.parse(start >= 0 ? body.slice(start, end + 1) : body);
+        const user = json?.identities?.user || null;
+        const status = user?.status || null;
+        const ready = user && (status === "ready" || status === "needs_refresh");
+        resolve({
+          available: true,
+          ready: Boolean(ready),
+          reason: !user ? "no-user" : status || "unknown",
+          message: ready
+            ? `已登录：${user.userName || user.openId || "飞书用户"}（${status}）`
+            : "本机 lark-cli 还未登录飞书账号，登录后即可在车型资料库 / 创作知识库使用飞书同步。",
+          userName: user?.userName || null,
+        });
+      } catch {
+        resolve({ available: true, ready: false, reason: "parse-failed", message: "无法解析 lark-cli 输出" });
+      }
+    });
+    child.on("error", (error) => {
+      clearTimeout(t);
+      resolve({ available: false, ready: false, reason: "spawn-failed", message: `lark-cli 启动失败：${error.message}` });
+    });
+  });
+}
 
 function parseEnv(text) {
   const map = {};
@@ -64,6 +130,27 @@ async function nonInteractive() {
   if (values.PERSONAL_DASHBOARD_VAULT_ROOT && !existsSync(values.PERSONAL_DASHBOARD_VAULT_ROOT)) {
     console.log(`  ⚠️ 知识库路径不存在，可由维护者先运行：node scripts/init-vault.mjs "${values.PERSONAL_DASHBOARD_VAULT_ROOT}"`);
   }
+  await reportFeishuAuth();
+}
+
+async function reportFeishuAuth() {
+  console.log("");
+  console.log("── 探测本机飞书登录状态 ──");
+  const auth = await probeFeishuAuth();
+  if (auth.available && auth.ready) {
+    console.log(`✅ ${auth.message}`);
+    return;
+  }
+  console.log(`⚠️  ${auth.message}`);
+  console.log("    车型资料库 / 创作知识库 依赖飞书 OAuth 授权才能加载。");
+  console.log("    修好之后回来重跑 node scripts/setup-env.mjs 检查。");
+  console.log("");
+  console.log("    ➤ Windows（PowerShell / CMD）：");
+  console.log("        lark-cli auth login");
+  console.log("      弹出浏览器登录即可，首次会同时请求知识库 / 文档读写权限。");
+  console.log("");
+  console.log("    ➤ 如果团队不需要飞书板块，直接跳到「内容生成 / 内容审核 / 每日热点 / 社媒洞察」");
+  console.log("      这些页面也能正常使用（不依赖飞书）。");
 }
 
 async function interactive() {
@@ -108,6 +195,7 @@ async function interactive() {
     await copyFile(feishuExample, feishuSrc);
     console.log(`   📋 已生成 server/feishu-sources.json（飞书账号模板），记得填入你自己的 spaceId/nodeToken。`);
   }
+  await reportFeishuAuth();
   console.log("");
 }
 

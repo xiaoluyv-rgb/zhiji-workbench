@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { MaterialDocumentRow } from "../components/materials/MaterialDocumentRow";
 import { CarModelHub } from "../components/materials/CarModelHub";
+import { FeishuAuthNotice } from "../components/FeishuAuthNotice";
 import { PageHeader } from "../components/PageHeader";
 import {
   addMaterialToReadingQueue,
@@ -235,7 +236,10 @@ export function MaterialsPage({ onOpenDocument }) {
       ) : hasError ? (
         <div className="error-note">加载失败：{result.error?.message || "未知错误"}</div>
       ) : isHome ? (
-        <CarModelHub />
+        <>
+          <FeishuAuthNotice onRefresh={reload} />
+          <CarModelHub />
+        </>
       ) : (
         <motion.div
           animate={{ opacity: 1, y: 0 }}

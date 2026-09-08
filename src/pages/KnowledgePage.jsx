@@ -6,6 +6,7 @@ import rehypeSanitize from "rehype-sanitize";
 import { IconBook2, IconExternalLink, IconFileText, IconFolder } from "@tabler/icons-react";
 import { PageHeader } from "../components/PageHeader";
 import { CreationGallery } from "../components/CreationGallery";
+import { FeishuAuthNotice } from "../components/FeishuAuthNotice";
 
 export function KnowledgePage({ initialPart = "car" }) {
   const [activePart, setActivePart] = useState(initialPart);
@@ -133,6 +134,10 @@ export function KnowledgePage({ initialPart = "car" }) {
           ) : null
         }
       />
+
+      {activePart === "car" ? (
+        <FeishuAuthNotice onRefresh={loadTree} />
+      ) : null}
 
       {activePart === "car" ? (
         <div className="kb-layout">

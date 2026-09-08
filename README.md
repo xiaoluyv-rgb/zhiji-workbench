@@ -17,7 +17,7 @@ npm run dev
 
 > 没装 Node？到 <https://nodejs.org> 装 LTS 版即可。
 
-## 首次使用：填两件事
+## 首次使用：填两件事 + 登录飞书
 
 第一次跑会让你填（或直接编辑 `.env`）：
 
@@ -25,6 +25,7 @@ npm run dev
 |---|---|
 | `OPENAI_API_KEY` | 你的 DeepSeek（或 OpenAI）Key。**每人各自一份**，不会上传共享。留空则内容生成/审核/热点走演示模式 |
 | `PERSONAL_DASHBOARD_VAULT_ROOT` | 团队共享 Vault 的绝对路径（没有可先用默认） |
+| **本机飞书登录（lark-cli）** | 「车型资料库」「创作知识库」依赖飞书为真相源，需要同事在本机跑一次 `lark-cli auth login`。其它四个模块不依赖飞书，不登录也能正常使用。脚本 `node scripts/setup-env.mjs` 跑完会探测，没登录会给出明确提示。 |
 
 `.env` 样例见 `.env.example`。任何时候改 `.env` 后重启 `npm run dev` 生效。
 

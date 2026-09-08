@@ -8422,3 +8422,122 @@ h3 {
   cursor: pointer;
 }
 .btn-ghost:hover { color: var(--ink); }
+
+/* ---- 飞书登录引导（FeishuAuthNotice） ---- */
+.feishu-auth-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  color: var(--ink);
+}
+
+.feishu-auth-notice--loading,
+.feishu-auth-notice--error {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.feishu-auth-notice--action {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+}
+
+.feishu-auth-notice--inline {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+.feishu-auth-notice > svg {
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feishu-auth-notice--loading > svg,
+.feishu-auth-notice--error > svg {
+  color: var(--ink-soft);
+}
+
+.feishu-auth-notice__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.feishu-auth-notice__body strong {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.feishu-auth-notice__reason {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.feishu-auth-notice__hint {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.feishu-auth-notice__cmd {
+  align-self: flex-start;
+  padding: 4px 10px;
+  margin-top: 4px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 36%, var(--line));
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent-strong);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, "JetBrains Mono", monospace);
+  font-size: 12px;
+}
+
+.feishu-auth-notice__meta {
+  font-size: 11px;
+  color: var(--ink-soft);
+  opacity: 0.78;
+  word-break: break-all;
+}
+
+.feishu-auth-notice__actions {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.feishu-auth-notice__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--line));
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .12s ease;
+}
+
+.feishu-auth-notice__action:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+
+.feishu-auth-notice__action--secondary {
+  border-color: var(--line);
+  color: var(--ink-soft);
+  background: var(--surface-sunken);
+}

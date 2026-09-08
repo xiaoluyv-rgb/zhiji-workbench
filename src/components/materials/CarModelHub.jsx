@@ -22,6 +22,7 @@ import {
   loadCarReference,
   syncCarReferenceImages,
 } from "../../lib/api";
+import { FeishuAuthNotice } from "../FeishuAuthNotice";
 
 function carModelBadge(cm) {
   if (!cm) return "未分类";
@@ -591,6 +592,8 @@ export function CarModelHub() {
         每个车型一张卡片：<strong>左栏</strong>是该车型的参数文档与飞书资料（点击弹窗阅读，飞书改动约 5 秒自动镜像），<strong>右栏</strong>是官方参考图，AI 出图时对照防错。
       </p>
 
+      <FeishuAuthNotice onRefresh={() => { loadRef(); loadFeishu(true); loadKb(true); }} />
+
       {feishu?.synced ? (
         <div className="car-model-hub__ima">
           <span className="car-model-hub__ima-dot" aria-hidden="true" />
@@ -638,7 +641,12 @@ export function CarModelHub() {
 
       {refError ? (
         <div className="materials-notice materials-notice--error" role="alert">
-          <span>参考图读取失败：{refError.message || "未知错误"}</span>
+          <span>
+            参考图读取失败：
+            {refError?.code === "FEISHU_AUTH_REQUIRED"
+              ? "飞书未登录，按页面顶部提示操作。"
+              : refError.message || "未知错误"}
+          </span>
         </div>
       ) : refLoading ? (
         <div className="car-ref-panel__loading">

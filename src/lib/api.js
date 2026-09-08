@@ -508,6 +508,12 @@ export function deleteGenerationRecord(id) {
 }
 
 // ---- 飞书知识库（实时挂载，不落地） ----
+// 探测本机 lark-cli user 身份是否就绪（在请求飞书业务方法之前调用，避免 12s 超时）。
+// 后端 /api/feishu/status 永远 200 返回，不会抛错；前端看到 ready=false 时直接渲染登录引导。
+export function loadFeishuStatus() {
+  return request("/api/feishu/status");
+}
+
 export function loadFeishuSources() {
   return request("/api/feishu/sources");
 }
