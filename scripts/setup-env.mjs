@@ -15,6 +15,21 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const envPath = path.join(root, ".env");
 
+// 双保险：npm install 的 postinstall 已经会建 src/data/fallback.js，
+// 这里再加一道是为了有人在 install 之前先跑 setup-env 的极端场景
+// （npm ci / 缓存命中不会触发 postinstall）。
+const fallbackPath = path.join(root, "src", "data", "fallback.js");
+if (!existsSync(fallbackPath)) {
+  try {
+    const { execFileSync } = await import("node:child_process");
+    execFileSync(process.execPath, [path.join(root, "scripts", "ensure-fallback.mjs")], {
+      stdio: "inherit",
+    });
+  } catch (e) {
+    console.warn(`⚠️ 兜底文件自愈失败：${e.message}（同事后续 npm run dev 会白屏，请检查 git 跟踪或手动恢复）`);
+  }
+}
+
 const DEFAULTS = {
   OPENAI_BASE_URL: "https://api.deepseek.com/v1",
   OPENAI_MODEL: "deepseek-chat",
