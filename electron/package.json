@@ -1,0 +1,66 @@
+{
+  "name": "zhiji-workbench-electron",
+  "version": "0.1.0",
+  "private": true,
+  "description": "智己运营工作台的 Electron 桌面封装（把 Node 后端 + 前端打进桌面安装包）",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.zhiji.ops-workbench",
+    "productName": "智己运营工作台",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.cjs"
+    ],
+    "extraResources": [
+      {
+        "from": "..",
+        "to": "workbench",
+        "filter": [
+          "**/*",
+          "!electron/**",
+          "!release/**",
+          "!dist/**",
+          "!dist-package/**",
+          "!node_modules/electron/**",
+          "!node_modules/electron-builder/**",
+          "!.git/**",
+          "!.workbuddy/**",
+          "!.feishu_tools/**",
+          "!.ima_tools/**",
+          "!**/*.log",
+          "!**/*.map",
+          "!*.jpg",
+          "!*.png",
+          "!.env",
+          "!.env.local"
+        ]
+      }
+    ],
+    "win": {
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "智己运营工作台"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.business"
+    }
+  }
+}

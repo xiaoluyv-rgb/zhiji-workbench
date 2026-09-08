@@ -1,0 +1,97 @@
+# ===== 私密 / 运行时（绝对不能进仓库）=====
+
+# 本地密钥 / 环境变量（含 OPENAI_API_KEY，禁止提交）
+.env
+.env.local
+.env.*.local
+
+# 运行时数据
+data/
+.workbench-state/
+server/.trend-scan-state.json
+server/.feishu-media-cache/
+
+# 飞书图片镜像二进制（体积大，可按 manifest 的 fileToken 从飞书重拉；manifest 本身纳入跟踪防丢映射）
+public/feishu-materials/*
+!public/feishu-materials/manifest.json
+public/feishu-creation-materials/*
+!public/feishu-creation-materials/manifest.json
+
+# 飞书账号与节点 token 映射（每个使用者各自配，不入公开仓）
+server/feishu-sources.json
+!server/feishu-sources.example.json
+
+# 工具产生的抓取缓存
+public/feishu-materials/.cache/
+doc-fetch-resources/
+
+# 本地缓存的车型图 / 创作素材 / ima 镜像（按 manifest 走飞书重拉，不入仓）
+public/car-reference/
+public/creation-cases/
+public/ima-materials/
+
+# ===== 依赖与构建产物 =====
+
+node_modules/
+dist/
+dist-package/
+node_modules/.vite/
+
+# 一键运行包嵌入的便携 Node（同事机无需 Node 才需打，仓库不需要）
+node/
+
+# Electron 桌面封装的产物与依赖
+electron/node_modules/
+electron/release/
+electron/dist/
+
+# ===== 沙箱 / WorkBuddy 本地工具（用户私有，不进仓库）=====
+
+.workbuddy/
+.feishu_tools/
+.ima_tools/
+.openai/
+.edge_verify_nav/
+.backup-*/
+.workbench-state/
+
+# 维护者私有的整理脚本与 CDP 验证脚本（一次性、含本机绝对路径，不进仓库）
+.verify-*.mjs
+.verify_*.mjs
+.reorg_by_model.py
+
+# ===== 临时 / 测试 / 调试残留 =====
+
+dev/
+*.tmp
+.tmp/
+*.DELETE*
+*.log
+.cache/
+
+# 抓取/调试时落盘的测试图
+sample-creation.png
+sample-creation-*.png
+_test_insert*.jpg
+_test_insert*.png
+img_v3_*.png
+img_v3_*.jpg
+LS8-*.jpg
+
+# CDP 验证截图（开发期产出，README 需要时再单独挑）
+工作台-*.png
+工作台-*.jpg
+
+# 操作系统 & 编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ===== 必须进仓库（不算忽略的，仅作白名单参考）=====
+
+# src/  server/  shared/  config/  scripts/  docs/  templates/  worker/  public/manifests
+# index.html  package.json  package-lock.json  vite.config.mjs
+# .env.example  .npmrc  .gitignore  README.md
+# start-workbench.bat / .command / .sh
+# tests/  electron/{main.cjs,package.json,README.md}

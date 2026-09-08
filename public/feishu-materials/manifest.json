@@ -1,0 +1,963 @@
+{
+  "syncedAt": "2026-09-08T06:22:17.510Z",
+  "source": "feishu",
+  "spaceId": "7664887113942338523",
+  "spaceName": "智己车型参考图库",
+  "brand": "智己",
+  "rootNodeToken": "Dtm1w5qB1iYuS8knvoEcIugcnUb",
+  "total": 112,
+  "models": {
+    "L6": {
+      "title": "智己L6",
+      "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+      "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+      "images": [
+        {
+          "name": "L6-01.jpg",
+          "fileToken": "Q0aIbC7sQoVDyqxpYOgcOyA5nOd",
+          "caption": "高1474mm高1474mm\n",
+          "size": 535791,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-02.jpg",
+          "fileToken": "JbyIbMhbsoMTmVxWUG6cOddrn7f",
+          "caption": "# 0.1s透光度瞬间调节，十档前后分区可调NMAT纳米矩阵调光技术透光度自由调节,阳光随心掌控\n",
+          "size": 322118,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-03.jpg",
+          "fileToken": "AY3yb77acomH7bxfKrOcpTuDnth",
+          "caption": "全波段紫外线隔绝既防晒红晒伤，更防晒黑晒老99.99%全波段紫外线隔绝率PA++++ SPF130+SPF130+UVA防护UVB防护\n",
+          "size": 364036,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-04.jpg",
+          "fileToken": "A13AbfggUogZPFx2gI0cZTRNnNg",
+          "caption": "波浪式舒压缓解长途驾驶疲劳\n",
+          "size": 247083,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-05.jpg",
+          "fileToken": "HpcPbLpMZorllxxu2BgcTyT2nQe",
+          "caption": "强支撑，软包裹坐垫三档软硬可调\n",
+          "size": 660938,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-06.jpg",
+          "fileToken": "V3OSbnTxao6a9Dxii9Sc1frEnPg",
+          "caption": "# 幻彩智慧灯语潮人出街最强嘴替\n",
+          "size": 302656,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-07.jpg",
+          "fileToken": "R9WHbxGKGoLgGqxbmtScAAjLn3f",
+          "caption": "黄金比例车身 27°Cipeline最美轿跑曲线怎么搭都高级\n",
+          "size": 582336,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-08.jpg",
+          "fileToken": "BJxybWOTCoPMyKxHO8jcADiAnAe",
+          "caption": "# 都市出行闪耀套装20英寸锋银运动轮辋倍耐力P ZERO轮胎前245mm/后275mm超强抓地力混合胎宽高亮真铝侧窗饰件\n",
+          "size": 407971,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-09.jpg",
+          "fileToken": "QG0FbuDUeoQGo7xomC7cpS8xn4c",
+          "caption": "独特掀背尾门，超大开口+超大后备箱空间三四个好友一起自驾出游，所有人的行李都能轻松装下\n",
+          "size": 285384,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-10.jpg",
+          "fileToken": "Bk1IbZgLsobGQ9xxUltc7zbRnmh",
+          "caption": "星漩羽韵艺术笔触装饰每个车门都有一幅艺术画作“大地象灰”主题内饰把高奢色彩带进车里\n",
+          "size": 384140,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-11.jpg",
+          "fileToken": "V8vubvDN5oKneJxToQOcI8a2nOg",
+          "caption": "后排11大角度靠背电动调节，最大37半躺坐姿升级座椅加热和靠背8点SPA或按摩\n",
+          "size": 604723,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-12.jpg",
+          "fileToken": "O6tEbyeWcoHxfZxCkIScfPrKnsc",
+          "caption": "88.6%同级领先超高得房率1350mm超宽后排宽度958mm头部空间头部空间头部空间超高得房率前后排都可以拥有同样的二郎腿自由\n",
+          "size": 433635,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-13.jpg",
+          "fileToken": "WBj1bK41gou0YCxV87ocjHQKnhg",
+          "caption": "副驾太空座椅轿车也能享受SUV的舒展\n",
+          "size": 492288,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-14.jpg",
+          "fileToken": "YCUQblfqfoEbMrxipZsc9WqYnOe",
+          "caption": "前排主副驾 座椅通风加热+8点SPA级按摩上车即刻舒压\n",
+          "size": 415320,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-15.jpg",
+          "fileToken": "PEQIbPstIoA0Yhxg6aockdztnMg",
+          "caption": "全车25处储物和拓展空间各种琐碎物品各就各位\n",
+          "size": 571550,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "L6-16.jpg",
+          "fileToken": "FxlUb4n9DoR7PBxp0VgcsOuenk2",
+          "caption": "# 21扬声器撼心空灵智能声场4个天空音响7.1.4多声道布置，全新「全景影院」模式\n",
+          "size": 382865,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        }
+      ]
+    },
+    "L7": {
+      "title": "智己L7",
+      "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+      "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/LgNlwWOimi8fdikZt54c2dK5nJf",
+      "images": [
+        {
+          "name": "L7-01.jpg",
+          "fileToken": "A92iboKsZomsaFxfk21cUzb2nrc",
+          "caption": "L7-01.jpg\n",
+          "size": 410205,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-02.jpg",
+          "fileToken": "BLxrbuPGQorEFBxEPTScL0LwnBf",
+          "caption": "# ●四轮转向系统完美兼具稳定舒适与灵活操控,造就真正行政豪华体验# ●毫秒级全路况电控智能阻尼悬架智慧预判路况，有效降低路面冲击感，营造行政级驾乘质感\n",
+          "size": 192190,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-03.jpg",
+          "fileToken": "FrB9b65XKo3j4Lx3XEgcPpUTnJg",
+          "caption": "零百加速 3.87s*1425kW25kW32.69m*1● 超长续航再升级 (CLTC综合工况续航里程)后驱车型708km*1智能四驱车型 625km*1●前245mm/后275mm混合胎宽● Brembo一体式四活塞专属色卡钳\n",
+          "size": 631954,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-04.jpg",
+          "fileToken": "IhwOb7VujoBIl4x7BaUcID43nXf",
+          "caption": "# ●储物空间全面优化前后门板储物空间优化中控扶手箱储物能力及实用性大大提升\n",
+          "size": 177090,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-05.jpg",
+          "fileToken": "IK0ibbtXColtXDxKGgAcT3B7nLg",
+          "caption": "# 超宽云感豪华座椅后排座椅靠背10°无级电动调节|后排三档坐靠加热&通风，腰肩及全背多部位按摩|前后排50mm大行程电动腿托|前后排智慧头枕音响\n",
+          "size": 208293,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-06.jpg",
+          "fileToken": "FpBrbu8q5oYNyHxJlmcccQrrnpb",
+          "caption": "● 行政级后排空间超1米腿部空间 | 近1.5米横向空间\n",
+          "size": 243760,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-07.jpg",
+          "fileToken": "KfpsbBv3FoG7dDxnIjacRoJenrd",
+          "caption": "22扬声器撼心空灵智慧声场声临其境,营造顶级视听感受\n",
+          "size": 167095,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-08.jpg",
+          "fileToken": "ZAS4bLyoboi2m7xtM2mc6VimnNf",
+          "caption": "# ● IM MAG磁吸拓展坞*2汽车秒变移动书房、办公室,百变空间无限演绎\n",
+          "size": 110159,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-09.jpg",
+          "fileToken": "OgzSba7ojoMQtWx35txcF1zpnad",
+          "caption": "●全域数字视野补盲-雨夜视野增强数字八倍镜,视野更清晰\n",
+          "size": 200375,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-10.jpg",
+          "fileToken": "WKcibuSwqoiOShxqO5bcJiNJnWc",
+          "caption": "· 全画幅数字驾舱屏一屏洞悉世界，打开全图视野\n",
+          "size": 162645,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-11.jpg",
+          "fileToken": "YzmpbzOeNouDhFxxvDAcKWd0nXc",
+          "caption": "智慧独立娱乐屏幕无框感更纤薄，大屏幕看得清显示面积 +30% 分辨率 +30%\n",
+          "size": 166851,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-12.jpg",
+          "fileToken": "SXrqbJk3JoNCtExhlUEcmyDGnZd",
+          "caption": "YAT巡航型半幅方向盘更大视野，更有乐趣的驾驶体验\n",
+          "size": 161809,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-13.jpg",
+          "fileToken": "FmZjbsX7qo1GfFxOCRic5BXnnO8",
+          "caption": "●深空级静谧驾舱(全车双层静音玻璃及密封系统)中国汽研NVH低风噪汽车A级认证\n",
+          "size": 75726,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-14.jpg",
+          "fileToken": "WEFXbBNz8oB6nKxaHRMcWNtwnBb",
+          "caption": "斜纹拼木纹饰板全新设计彰显独到品味\n",
+          "size": 199577,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-15.jpg",
+          "fileToken": "MIiObRZPhoc4PNxiRD6c2bOanzc",
+          "caption": "• 一键AI代驾2.0全量上车一键贴边 | 一键脱困 | 一键循迹泊车 贴边 个人中心 视频投屏 24°\n",
+          "size": 142674,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        },
+        {
+          "name": "L7-16.jpg",
+          "fileToken": "EWJcbhB7UoBJcIxAvJtcSyI2njf",
+          "caption": "●高速高架NOA，现已实现全国开通*4●城市NOA,逐步开启推送，实力稳占第一梯队*● 通勤模式先行版，随时都能用，全国都好用2L7\n",
+          "size": 612753,
+          "nodeToken": "LgNlwWOimi8fdikZt54c2dK5nJf",
+          "objToken": "SqwidV2TjoyOx1xbV1TclYFTnfb"
+        }
+      ]
+    },
+    "LS6": {
+      "title": "智己LS6",
+      "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+      "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+      "images": [
+        {
+          "name": "LS6-01.jpg",
+          "fileToken": "LuMkb7kjmowz9exAtKycH1dNn2b",
+          "caption": "LS6-01.jpg\n",
+          "size": 153457,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-02.jpg",
+          "fileToken": "SepmbGMS0ojEhYxt48Rcee0znbg",
+          "caption": "4937mm 车长1988mm 车宽1671mm车高2960mm轴距*图示为LSB纯电版尺寸数据，墙程版车高为1673mm\n",
+          "size": 248046,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-03.jpg",
+          "fileToken": "Xl3CbnieZogpGjxtUOIcjpsynFh",
+          "caption": "形态优雅,一眼高级黄金车身比例1.618\n",
+          "size": 435822,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-04.jpg",
+          "fileToken": "E6a8bIm7Coz0mKx5AitczpcOnog",
+          "caption": "雅典娜白\n",
+          "size": 468442,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-05.jpg",
+          "fileToken": "HbjSbFAuqocjuExJMdpcPX08nTe",
+          "caption": "尼维斯蓝\n",
+          "size": 753765,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-06.jpg",
+          "fileToken": "GJR5b2icAoSWkKxYgJ6cYRbWn2f",
+          "caption": "戈雅黑\n",
+          "size": 439193,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-07.jpg",
+          "fileToken": "Yr5hbACMKomXCCxB3nNcuVA8nod",
+          "caption": "雏巢齿台\n",
+          "size": 460405,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-08.jpg",
+          "fileToken": "FGUHbFmEaoYhjKxJqiqcmqKWnML",
+          "caption": "拉斐尔茶\n",
+          "size": 588355,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-09.jpg",
+          "fileToken": "YNYHbCgeeoLV7expi31c7R38noc",
+          "caption": "透纳银\n",
+          "size": 382197,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-10.jpg",
+          "fileToken": "T2vfbIUbXoZC0uxovvycCmurnPb",
+          "caption": "● 21英寸锋银运动轮辋●倍耐力高性能运动轮胎●前235后265混合胎宽●专属高亮真铝侧窗饰件\n",
+          "size": 460280,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-11.jpg",
+          "fileToken": "Td3Mbf1Mso0jAUxWHxhcBZQ0nvh",
+          "caption": "# 大地象灰深色内饰 | 浅色内饰超薄悬浮中控物理按键浮光跃金饰艺\n",
+          "size": 487770,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-12.jpg",
+          "fileToken": "Zvvhb5gl1oiqOuxPJNqcNEwXnif",
+          "caption": "# 全新灵蜥矢量运动控制系统深度融合第三代电子电气架构整车运动能力全面提升\n",
+          "size": 425516,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-13.jpg",
+          "fileToken": "Ssvmbcjq9o7ftWx8QwccnVHonBc",
+          "caption": "# 顶级硬件，底盘配置再升级更大阻尼带宽智能电控减振器前双叉臂悬架超大行程全场景智慧空气悬架·同级唯一双向18°智慧四轮转向后多连杆悬架\n",
+          "size": 369314,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-14.jpg",
+          "fileToken": "I6oBbMoxtoed29xOdRNc267TnLg",
+          "caption": "全新德国大陆MKC2线控制动系统支持四轮单独制动全新双向18度，同级唯一灵活好开\n",
+          "size": 516323,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-15.jpg",
+          "fileToken": "K5ASbC1KmodRmnxlaMPcJZXmnIf",
+          "caption": "行业首个鱼钩测试(防侧翻测试)突破190km/h量产车型鱼钩测试 挑战成功!四轮均未离地 翻车易发区域急回左打540°急转右打270°2秒内车辆达到最大侧向加速度\n",
+          "size": 414280,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        },
+        {
+          "name": "LS6-16.jpg",
+          "fileToken": "HbrdblqZPoBsu4xsHHzcwUD9nWK",
+          "caption": "# 湿滑路面稳行从容新一代智己LS6 湿地鹿鹿测试83km/h超过传统顶级干地鹿鹿成绩比传统TCS响应速度快5-10倍比传统四驱转弯稳定性提升15%比传统四驱方向稳定性提升80%\n",
+          "size": 450175,
+          "nodeToken": "ONVaw9YLQi5tHlkZ8q1cBQTZnOg",
+          "objToken": "C3gzdNQoyoJ5DZxToowclUeknIg"
+        }
+      ]
+    },
+    "LS7": {
+      "title": "智己LS7",
+      "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+      "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+      "images": [
+        {
+          "name": "LS7-01.jpg",
+          "fileToken": "ZtwQbOr0LoTSDIx9FuPc0vDXnag",
+          "caption": "旗舰车身尺寸 大车身大格局超5米车长，超3米轴距，大有可为\n",
+          "size": 419844,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-02.jpg",
+          "fileToken": "XGf3blou6otRwGx1n8ZcFsrdnRg",
+          "caption": "# 防晒隐于无形通透跃于眼前三层镀银工艺,紫外线隔绝率99.99%\n",
+          "size": 204895,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-03.jpg",
+          "fileToken": "WFQYbLX8moyIIexQEX9coJJgnAg",
+          "caption": "# 超宽视野 全景尽收眼底2m级的超大穹顶玻璃，横向视野180°，纵向视野可达106°\n",
+          "size": 428189,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-04.jpg",
+          "fileToken": "PIbGb1C0Nofr21xt2UQcVFRtnkg",
+          "caption": "# 顶级安全 尖端制造工艺国产大飞机同源玻璃工艺，抗冲击安全性能高达国标要求近4倍\n",
+          "size": 384559,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-05.jpg",
+          "fileToken": "WBgTbVdKNoSavGxEXIBc0kC2nUd",
+          "caption": "# 雅典娜白# 拉斐尔茶# 伦勃朗灰# 阿瑞斯黑\n",
+          "size": 183038,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-06.jpg",
+          "fileToken": "ESirbLj4FoF75hxfBBXcbQhUnIc",
+          "caption": "# 轻量化高性能悬架系统前双叉臂式独立悬架后多连杆式独立悬架\n",
+          "size": 251158,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-07.jpg",
+          "fileToken": "JGp4bi77hoUr4Zx6uYacADqCns1",
+          "caption": "德国大陆全场景闭式智慧空气悬架 进退有度,皆是坦途 德国大陆前四活塞一体式固定卡钳德国大陆 One-box全解耦线控制动系统Brembo FNC碳氮共渗制动盘毫秒级响应智能电控动态阻尼减振器\n",
+          "size": 375261,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-08.jpg",
+          "fileToken": "AeFobmUGroCaQ5xOuZScqBPfn7d",
+          "caption": "# 智慧四轮转向 方寸之间也灵动配备双向±6°后轮转向系统，最小转弯半径低至5.3m\n",
+          "size": 344277,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-09.jpg",
+          "fileToken": "L2LpbSmhXo3NhwxDkYmcQWnbnee",
+          "caption": "# 舒适制动功能 稳稳刹停平地制动体感G值降低92.3%,坡道降低88%\n",
+          "size": 763771,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-10.jpg",
+          "fileToken": "FoUxbULFfodNEhxSAh1c5Lpxn4g",
+          "caption": "精准舒缓疲惫 随时犒劳身心全车四座配备加热/通风/按摩,支持3种循环、3档力度调节的背部按摩\n",
+          "size": 462071,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-11.jpg",
+          "fileToken": "JNmTb7RLuoXS9uxlXLOcSr9Lnec",
+          "caption": "1045mm 头部空间 腿部空间 腿部空间超大用车空间 悦享从容尺寸90.4%超高得房率*以上数据，采用的是SAE标准的95%男性人体测量而得\n",
+          "size": 483092,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-12.jpg",
+          "fileToken": "HWVYbzeMXorh9LxWqDZcdU7Knrc",
+          "caption": "# 整车降噪 打造一方专属「静」土RNC主动座舱噪音控制，主动声波补偿抵消噪音，整车自带“降噪耳机”\n",
+          "size": 517055,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-13.jpg",
+          "fileToken": "TPLnbYDhdoz0eGxIVsJc4Ig5nde",
+          "caption": "超级大床房模式 整车贯通阳光大平层全车座椅放平，全车打通，极致拓展\n",
+          "size": 635288,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-14.jpg",
+          "fileToken": "BqIkb6iQboypRMx6G9XcQsfLnDd",
+          "caption": "副驾零重力模式 车内小憩 懒懒又惬意121°真正零重力座椅\n",
+          "size": 400308,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-15.jpg",
+          "fileToken": "LDxtbfGUEo9cICxAwT8cyJXQnXb",
+          "caption": "前排双贵妃椅模式 躺平的二人世界前排座椅可放倒与后排相连，全方位舒适承托缓解疲惫\n",
+          "size": 550952,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        },
+        {
+          "name": "LS7-16.jpg",
+          "fileToken": "OxIWb8my8oLhB3xQHEkcH87Inxh",
+          "caption": "大床房模式 演绎N种生活「享」法后排向前放倒，拓展更大空间\n",
+          "size": 786773,
+          "nodeToken": "XbeTwOgcsiu1VRkqdAwcJnLrnEd",
+          "objToken": "UkCvdtvgqoAMMRxlpu5ceQarnFf"
+        }
+      ]
+    },
+    "LS8": {
+      "title": "智己LS8",
+      "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+      "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+      "images": [
+        {
+          "name": "LS8-01.jpg",
+          "fileToken": "NgdZbCpRJouqowxUvDicKQ2RnQh",
+          "caption": "# 智2LS8行业最长一体式贯穿行车灯|猎鹰智慧灯光2.0165°超广角车前照明 | 16颗聚光多角度光束LED灯珠\n",
+          "size": 243541,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-02.jpg",
+          "fileToken": "LolYbZAWbo27DOxyIR4c9CVNnof",
+          "caption": "# 0.618黄金车身比例灵感来自湾流游艇，格调奢华|鲨鱼鳍C柱，优雅又有辨识度\n",
+          "size": 323602,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-03.jpg",
+          "fileToken": "Fzn4bacLTouylYxtWy3cSbSlnkh",
+          "caption": "布莱德绿\n",
+          "size": 1109132,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-04.jpg",
+          "fileToken": "JiNkbJ1ATos0Fyxm5cBc7O43nMd",
+          "caption": "帕米尔灰\n",
+          "size": 775475,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-05.jpg",
+          "fileToken": "RwXkba99LoEZdhxWCencJisgnde",
+          "caption": "奥林匹斯黑\n",
+          "size": 576316,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-06.jpg",
+          "fileToken": "LADNb7wENoa204xLXHBccsm5nmg",
+          "caption": "阿尔卑斯白\n",
+          "size": 1010608,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-07.jpg",
+          "fileToken": "HjiMbEljKox63MxNq9Rcvuvbnzb",
+          "caption": "乔戈里银\n",
+          "size": 952803,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-08.jpg",
+          "fileToken": "SUn3bH8fEo5r6zxbEeocIWvmnDh",
+          "caption": "大象灰 黑\n",
+          "size": 391317,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-09.jpg",
+          "fileToken": "ALjqbbG9Soz78IxQoj3ctgTwnNq",
+          "caption": "大象灰 棕\n",
+          "size": 389379,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-10.jpg",
+          "fileToken": "GXiNb9RuvoayTsx5aQRczLvZnZg",
+          "caption": "大象灰 米\n",
+          "size": 426681,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-11.jpg",
+          "fileToken": "R4Gibt5LjoPfzmxfa2ncQ9BLn9e",
+          "caption": "自带超充桩的电车\n",
+          "size": 683778,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-12.jpg",
+          "fileToken": "JkOfbThELobiOFx6Kp3cz4h8nfh",
+          "caption": "800V碳化硅架构双电机矢量四驱系统碳化硅高性能黑标爬风电机高性能黑标爬风电机\n",
+          "size": 542818,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-13.jpg",
+          "fileToken": "WlBobZN5Ko3MwmxcBoycNMDtnCf",
+          "caption": "# 全程无噪音行业首创 ERNC 2.0 主动降噪技术增程器介入无感，二排噪音增量低至0分贝\n",
+          "size": 627687,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-14.jpg",
+          "fileToken": "MRAib953coJf8lxZfbYcIQr3nGe",
+          "caption": "充电不用等全域800V高压增程平台电量从30%到80%，最快仅需12分钟\n",
+          "size": 521518,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-15.jpg",
+          "fileToken": "CLlgbr2jjoFJxMxGuCqch1djnnc",
+          "caption": "# 冬天放心用-20℃,电池能量保持率>95% 低温充电起始功率170kW\n",
+          "size": 688767,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
+        {
+          "name": "LS8-16.jpg",
+          "fileToken": "HYGhbsWBbot8mvxCSCrcR2eFnrJ",
+          "caption": "# 超级骁遥MAX电池66kWh 超级骁遥MAX电池430km(CLTO)纯电续航\n",
+          "size": 263801,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        }
+      ]
+    },
+    "LS9": {
+      "title": "智己LS9",
+      "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+      "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+      "images": [
+        {
+          "name": "LS9-01.jpg",
+          "fileToken": "VCmkbqHJsoj6tuxQrOKcMBwUnGd",
+          "caption": "5279mm2000mm1806mm车高3160mm轴距\n",
+          "size": 626678,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-02.jpg",
+          "fileToken": "AMD6bMcoFoBvWsxDtjscIgwInDc",
+          "caption": "贯穿式Skyline 2.0尾灯\n",
+          "size": 525442,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-03.jpg",
+          "fileToken": "BtwtbvnMrozlgPxfblVcbFpsnMh",
+          "caption": "# 2.4米超感星轨一体式贯穿前大灯组\n",
+          "size": 350425,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-04.jpg",
+          "fileToken": "GuETbz6PZoxYG7x1XxqcXr36nHb",
+          "caption": "游艇巡航侧姿\n",
+          "size": 560856,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-05.jpg",
+          "fileToken": "KTRXbPlOQoZonbxiYMucFulxnW7",
+          "caption": "乔戈里银\n",
+          "size": 786172,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-06.jpg",
+          "fileToken": "WbzibYxz7oLW8GxzooecDwBQnfh",
+          "caption": "波罗蒂蓝\n",
+          "size": 480570,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-07.jpg",
+          "fileToken": "WLx4b10MZogWTGxdsh2cdDtdnDb",
+          "caption": "奥林匹斯黑\n",
+          "size": 536612,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-08.jpg",
+          "fileToken": "X0gibvsRIoKlF9xQvlicRabQnWb",
+          "caption": "高加索灰\n",
+          "size": 701334,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-09.jpg",
+          "fileToken": "R2lFb6j29oL5KXxrhv5cSlQBnN9",
+          "caption": "大地橘色\n",
+          "size": 384091,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-10.jpg",
+          "fileToken": "LRJTb5bBIo8Pn3xnJuqcUa9inEc",
+          "caption": "大地象灰 深\n",
+          "size": 390097,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-11.jpg",
+          "fileToken": "XYxybo1kloZvGYxq01oc0R5Vnzd",
+          "caption": "大地象灰 浅\n",
+          "size": 436705,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-12.jpg",
+          "fileToken": "Nk8lb00GXoc6ErxbnwWcv4r7nUc",
+          "caption": "# IM Nappa DELUXE 豪高定头层真皮 皇家礼赞艺术木纹饰板 巴洛克渐变浮雕绗缝 加尼叶金饰 智能沉浸氛围灯\n",
+          "size": 689697,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-13.jpg",
+          "fileToken": "Kecvb6C9lof6alxfv7tctnEknYo",
+          "caption": "# 全线控四轮转向一车多面 全家适配，4.5:1-14.2:1超大转向比|三档可调半圈打满，时刻优雅，后轮双向转向角 24°|最小转弯半径 4.77m\n",
+          "size": 242746,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-14.jpg",
+          "fileToken": "E7eubBPcJoUHogxdUkhcgRQkn7e",
+          "caption": "# 全线控四轮转向20毫秒极速响应|精准执行，全维度数字化控制|安全可靠，三重安全冗余\n",
+          "size": 431329,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-15.jpg",
+          "fileToken": "QNNDbqok3oWrJ3xMnFHcOxH6nyC",
+          "caption": "# 800V恒星超级增程390km(CLTC)纯电续航ERNC2.0主动降噪技术1460km(CLTC)综合续航2.88L百公里综合折算能耗\n",
+          "size": 308866,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        },
+        {
+          "name": "LS9-16.jpg",
+          "fileToken": "VHL9bsmBJoVj2XxNeADcbIHfn5f",
+          "caption": "智己LS9 Hyper 金标飓风三电机四驱550kW730N·m3秒级零百加速\n",
+          "size": 511034,
+          "nodeToken": "ELZ4wklVbiboKYk6VJ9cZ0YNnag",
+          "objToken": "N4wKdY1aTo9whmxhHsrcXnzcnsh"
+        }
+      ]
+    },
+    "LS9 Hyper": {
+      "title": "智己LS9 Hyper",
+      "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+      "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc",
+      "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/M24owiaCoivC9Lk4VoGcjuEpnVe",
+      "images": [
+        {
+          "name": "LS9-Hyper-01.jpg",
+          "fileToken": "G7BTbCN2co2VGYxnpt5c5n02nNc",
+          "caption": "5279mm2000mm1806mm车高3160mm轴距\n",
+          "size": 626678,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-02.jpg",
+          "fileToken": "AFT7bCC2moz3IfxSaDOcQLZsnih",
+          "caption": "贯穿式Skyline 2.0尾灯\n",
+          "size": 525442,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-03.jpg",
+          "fileToken": "Lf7zbEFLloBqpQxdygIcilTanug",
+          "caption": "# 2.4米超感星轨一体式贯穿前大灯组\n",
+          "size": 350425,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-04.jpg",
+          "fileToken": "FaB7betaioa9wuxszZGcsCINnkb",
+          "caption": "游艇巡航侧姿\n",
+          "size": 560856,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-05.jpg",
+          "fileToken": "QKWsb1bunonb4cxQ3kjcCkqWnyh",
+          "caption": "乔戈里银\n",
+          "size": 786172,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-06.jpg",
+          "fileToken": "GJPJbp3oTorQX9xsBSqc6R8an1c",
+          "caption": "波罗蒂蓝\n",
+          "size": 480570,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-07.jpg",
+          "fileToken": "BUKNbzX8Zo0YruxQYlUc4GolnHf",
+          "caption": "奥林匹斯黑\n",
+          "size": 536612,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-08.jpg",
+          "fileToken": "HFAUbpUmHoSSsIxO1igcA2KVnah",
+          "caption": "高加索灰\n",
+          "size": 701334,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-09.jpg",
+          "fileToken": "YBwgbfJBZoshxgxs8A0cgnbWn3I",
+          "caption": "大地橘色\n",
+          "size": 384091,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-10.jpg",
+          "fileToken": "B4WZb4RoloIAxixhHkMcY4nJnxc",
+          "caption": "大地象灰 深\n",
+          "size": 390097,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-11.jpg",
+          "fileToken": "FNV8bjhpxoEsgWxV6yTcywLlnLd",
+          "caption": "大地象灰 浅\n",
+          "size": 436705,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-12.jpg",
+          "fileToken": "RTAbbJpjRox7hIx6i0hcLnZLnJc",
+          "caption": "# IM Nappa DELUXE 豪高定头层真皮 皇家礼赞艺术木纹饰板 巴洛克渐变浮雕绗缝 加尼叶金饰 智能沉浸氛围灯\n",
+          "size": 689697,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-13.jpg",
+          "fileToken": "B28obedywoY3IYxdHOwc0IBXn9i",
+          "caption": "# 全线控四轮转向一车多面 全家适配，4.5:1-14.2:1超大转向比|三档可调半圈打满，时刻优雅，后轮双向转向角 24°|最小转弯半径 4.77m\n",
+          "size": 242746,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-14.jpg",
+          "fileToken": "PXZfbPlpooEtarxN8bPckXGdnbh",
+          "caption": "# 全线控四轮转向20毫秒极速响应|精准执行，全维度数字化控制|安全可靠，三重安全冗余\n",
+          "size": 431329,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-15.jpg",
+          "fileToken": "M9Lab5JidoZ4WTxGu6TcZZN9nwc",
+          "caption": "# 800V恒星超级增程390km(CLTC)纯电续航ERNC2.0主动降噪技术1460km(CLTC)综合续航2.88L百公里综合折算能耗\n",
+          "size": 308866,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        },
+        {
+          "name": "LS9-Hyper-16.jpg",
+          "fileToken": "AlThbnDxsoIG9oxpWcQc6v8fnBV",
+          "caption": "智己LS9 Hyper 金标飓风三电机四驱550kW730N·m3秒级零百加速\n",
+          "size": 511034,
+          "nodeToken": "M24owiaCoivC9Lk4VoGcjuEpnVe",
+          "objToken": "I4Imd5lVCooGTWxgJm0c0JHmnyc"
+        }
+      ]
+    }
+  }
+}

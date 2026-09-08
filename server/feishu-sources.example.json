@@ -1,0 +1,19 @@
+[
+  {
+    "id": "zhiji-wiki-space",
+    "name": "智己车型素材库",
+    "spaceId": "REPLACE_WITH_YOUR_FEISHU_WIKI_SPACE_ID",
+    "rootNodeToken": "REPLACE_WITH_YOUR_ROOT_NODE_TOKEN",
+    "brand": "智己",
+    "webDomain": "REPLACE_WITH_YOUR_FEISHU_WEB_DOMAIN.feishu.cn",
+    "enabled": true
+  },
+  {
+    "id": "zhiji-viral-analysis",
+    "name": "智己爆文分析库",
+    "spaceId": "REPLACE_WITH_YOUR_SPACE_ID",
+    "brand": "智己",
+    "webDomain": "REPLACE_WITH_YOUR_WEB_DOMAIN",
+    "enabled": true
+  }
+]
