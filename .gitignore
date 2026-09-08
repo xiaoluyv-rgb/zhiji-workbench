@@ -6,10 +6,14 @@
 .env.*.local
 
 # 运行时数据
-data/
+/data/
 .workbench-state/
 server/.trend-scan-state.json
 server/.feishu-media-cache/
+
+# ⚠️ 注意：所有 ignore 规则默认在任意路径层级都生效；以下目录限定根目录，
+# 是为了避免误伤 src/data/、src/cache/ 等源码子目录里的真文件
+# (.gitignore 历史的经典陷阱：写 data/ 会把 src/data/fallback.js 一起忽略)
 
 # 飞书图片镜像二进制（体积大，可按 manifest 的 fileToken 从飞书重拉；manifest 本身纳入跟踪防丢映射）
 public/feishu-materials/*
