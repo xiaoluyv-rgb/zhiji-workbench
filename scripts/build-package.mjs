@@ -42,6 +42,7 @@ const INCLUDE_FILES = [
   "start-workbench.bat",
   "start-workbench.command",
   "start-workbench.sh",
+  "INSTALL_FOR_WORKBUDDY.md",
   "交接说明.md",
 ];
 
