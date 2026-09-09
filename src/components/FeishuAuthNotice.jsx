@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { IconBrandFeishu, IconRefresh, IconExternalLink } from "@tabler/icons-react";
+import { IconMessageCircle2, IconRefresh, IconExternalLink } from "@tabler/icons-react";
 import { loadFeishuStatus } from "../lib/api";
 
 const POLL_INTERVAL_MS = 0; // 手动刷新即可，不必轮询
@@ -36,7 +36,7 @@ export function FeishuAuthNotice({ variant = "banner", onRefresh }) {
   if (auth.status === "loading") {
     return (
       <div className={`feishu-auth-notice feishu-auth-notice--${variant} feishu-auth-notice--loading`} role="status">
-        <IconBrandFeishu size={18} aria-hidden="true" />
+        <IconMessageCircle2 size={18} aria-hidden="true" />
         <span>正在检测本机飞书登录状态…</span>
       </div>
     );
@@ -45,7 +45,7 @@ export function FeishuAuthNotice({ variant = "banner", onRefresh }) {
   if (auth.status === "error") {
     return (
       <div className={`feishu-auth-notice feishu-auth-notice--${variant} feishu-auth-notice--error`} role="alert">
-        <IconBrandFeishu size={18} aria-hidden="true" />
+        <IconMessageCircle2 size={18} aria-hidden="true" />
         <div className="feishu-auth-notice__body">
           <strong>无法检测本机飞书登录状态</strong>
           <span>{auth.error?.message || "请稍后重试。"}</span>
@@ -71,7 +71,7 @@ export function FeishuAuthNotice({ variant = "banner", onRefresh }) {
 
   return (
     <div className={`feishu-auth-notice feishu-auth-notice--${variant} feishu-auth-notice--action`} role="alert">
-      <IconBrandFeishu size={20} aria-hidden="true" />
+      <IconMessageCircle2 size={20} aria-hidden="true" />
       <div className="feishu-auth-notice__body">
         <strong>需要先登录本机飞书账号</strong>
         <span className="feishu-auth-notice__reason">{reasonText}</span>

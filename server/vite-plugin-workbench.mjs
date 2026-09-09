@@ -1301,10 +1301,60 @@ export function workbenchApiPlugin({
             });
             res.write(": connected\n\n");
             const unsubscribe = vaultSync.subscribe((event) => {
-              res.write(`data: ${JSON.stringify(event)}\n\n`);
+              try {
+                res.write(`data: ${JSON.stringify(event)}\n\n`);
+              } catch {
+                // 客户端已断开但 close 事件未触发；下一轮心跳会兜底清理
+              }
             });
-            req.on("close", unsubscribe);
+            // SSE 心跳：每 25s 发一行注释，防止企业代理 / 反向代理把这条长连接掐掉。
+            // 同时在 socket 真正断开时清掉订阅，避免 vaultSync.listeners 单调累积。
+            const keepalive = setInterval(() => {
+              try {
+                res.write(": keepalive\n\n");
+              } catch {
+                cleanup();
+              }
+            }, 25_000);
+            keepalive.unref?.();
+            const cleanup = () => {
+              clearInterval(keepalive);
+              try { unsubscribe(); } catch {}
+              try { res.end?.(); } catch {}
+            };
+            req.on("close", cleanup);
+            res.on("close", cleanup);
             return;
+          }
+
+          if (req.method === "GET" && url.pathname === "/api/health") {
+            const mem = process.memoryUsage();
+            const dailyHot = dailyHotEngine.state || {};
+            return json(res, 200, {
+              schemaVersion: 1,
+              pid: process.pid,
+              uptimeSec: Math.round(process.uptime()),
+              node: process.version,
+              platform: process.platform,
+              memory: {
+                rssMB: Math.round(mem.rss / 1048576),
+                heapUsedMB: Math.round(mem.heapUsed / 1048576),
+                heapTotalMB: Math.round(mem.heapTotal / 1048576),
+                externalMB: Math.round((mem.external || 0) / 1048576),
+              },
+              engines: {
+                dailyHot: {
+                  status: dailyHot.status,
+                  fetchedAt: dailyHot.fetchedAt,
+                  expiresAt: dailyHot.expiresAt,
+                  nextRefreshAt: dailyHot.nextRefreshAt,
+                  total: dailyHot.total,
+                },
+                trendScan: trendScanEngine.statusPayload(),
+              },
+              vault: vaultSync.getStatus(),
+              timestamp: new Date().toISOString(),
+            });
           }
 
           if (req.method === "GET" && url.pathname === "/api/vault/sync") {
