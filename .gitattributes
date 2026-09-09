@@ -1,0 +1,3 @@
+# 强制 Windows 批处理以 CRLF 换行 — 否则 goto/setlocal 解析崩、cmd 闪退、用户看到"完全没用反应"
+*.bat text eol=crlf
+*.cmd text eol=crlf

@@ -6,7 +6,7 @@
 //   node scripts/build-package.mjs --with-node "<node便携zip路径>"   # 解压便携 Node 到 node\（同事免装）
 //
 // 产出：dist-package/工作台一键运行包.zip
-import { cp, mkdir, rm, readdir, stat } from "node:fs/promises";
+import { cp, mkdir, rm, readdir, stat, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -100,7 +100,16 @@ async function main() {
   // 4) 根级文件
   for (const f of INCLUDE_FILES) {
     const src = path.join(root, f);
-    if (existsSync(src)) await cp(src, path.join(stageDir, f));
+    if (!existsSync(src)) continue;
+    const dest = path.join(stageDir, f);
+    await cp(src, dest);
+    // Windows 批处理 / cmd 必须在 CRLF 换行下才能正常执行，否则 goto/setlocal 解析崩、cmd 窗口直接闪退。
+    // git 在 Windows 上 core.autocrlf 默认会把 bat 转回 LF 入仓，所以源文件是 LF；打包时强制把 .bat / .cmd 转 CRLF 再发给同事。
+    if (/\.(bat|cmd)$/i.test(f)) {
+      const txt = await readFile(dest, "utf8");
+      await writeFile(dest, txt.replace(/\r?\n/g, "\r\n"), "utf8");
+      console.log(`[打包] 强制 CRLF: ${f}`);
+    }
   }
 
   // 5) 可选：解压便携 Node 到 node\
