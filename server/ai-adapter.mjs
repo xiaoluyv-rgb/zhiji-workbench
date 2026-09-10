@@ -55,38 +55,42 @@ const VAULT_SUBFOLDERS = {
   benefits: ["wiki", "benefits"],
 };
 
-async function readVaultDoc(vaultRoot, relativePath) {
-  const absolute = path.resolve(vaultRoot, relativePath);
-  const raw = await readFile(absolute, "utf8");
-  return matter(raw);
-}
+// 内置 seed 根目录：同事 git clone 后本地 Vault 为空时，从这里兜底读取车型参数，
+// 保证「开箱即用」——不必再手动把参数库塞进 Vault。数据源顺序：vault 优先，seed 兜底。
+const SEED_ROOT = path.join(__dir, "seed");
 
 async function listVaultFolder(vaultRoot, subfolderParts) {
-  const dir = path.resolve(vaultRoot, ...subfolderParts);
-  let entries;
-  try {
-    entries = await readdir(dir, { withFileTypes: true });
-  } catch {
-    return [];
-  }
-  const docs = [];
-  for (const entry of entries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const relativePath = path.join(...subfolderParts, entry.name);
+  const candidates = [
+    path.resolve(vaultRoot, ...subfolderParts),
+    path.resolve(SEED_ROOT, ...subfolderParts),
+  ];
+  for (const dir of candidates) {
+    let entries;
     try {
-      const parsed = await readVaultDoc(vaultRoot, relativePath);
-      docs.push({
-        relativePath,
-        title: parsed.data.title || entry.name.replace(/\.md$/, ""),
-        model: entry.name.replace(/ 官方参数\.md$/, "").replace(/\.md$/, ""),
-        data: parsed.data,
-        content: parsed.content,
-      });
+      entries = await readdir(dir, { withFileTypes: true });
     } catch {
-      // 跳过无法解析的文件
+      continue;
     }
+    const docs = [];
+    for (const entry of entries) {
+      if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+      try {
+        const raw = await readFile(path.join(dir, entry.name), "utf8");
+        const parsed = matter(raw);
+        docs.push({
+          relativePath: path.join(...subfolderParts, entry.name),
+          title: parsed.data.title || entry.name.replace(/\.md$/, ""),
+          model: entry.name.replace(/ 官方参数\.md$/, "").replace(/\.md$/, ""),
+          data: parsed.data,
+          content: parsed.content,
+        });
+      } catch {
+        // 跳过无法解析的文件
+      }
+    }
+    if (docs.length > 0) return docs;
   }
-  return docs;
+  return [];
 }
 
 // 从 markdown 正文解析 "**标签**：值" 形式的参数
