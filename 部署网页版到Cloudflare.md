@@ -1,4 +1,4 @@
-# 网页版部署说明（Cloudflare Pages）
+# 网页版部署说明（Cloudflare Workers）
 
 > 目标：给同事一个网址，他自己填一次 API Key 就能用；你推 git 或跑一条命令，全员立刻更新。
 
