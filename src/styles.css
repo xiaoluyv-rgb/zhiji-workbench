@@ -6627,6 +6627,18 @@ h3 {
   color: var(--ink-faint);
 }
 
+.cg-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.cg-hint__link {
+  color: var(--accent, #4f46e5);
+  text-decoration: underline;
+}
+
 .content-gen {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);

@@ -6,10 +6,11 @@
 //   · 不依赖 shell 的环境变量语法与 PATH 里的 vite，统一用 node 显式调用
 //
 // 用法：npm run build:hosted
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isGoodNode, preferredNode } from "./pick-node.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const VITE_ENTRY = path.join(ROOT, "node_modules", "vite", "bin", "vite.js");
@@ -31,7 +32,21 @@ function run(label, command, args, env) {
   });
 }
 
+// node 24 下 vite 会卡死在打包阶段，发现版本不对就用 node 22 重新跑一遍自己。
+function reexecWithGoodNode() {
+  if (isGoodNode()) return false;
+  const alt = preferredNode();
+  if (alt === process.execPath) return false;
+  console.log(`[hosted] 当前 node ${process.version} 打包会卡死，改用 ${alt} 重新执行`);
+  const r = spawnSync(alt, [fileURLToPath(import.meta.url), ...process.argv.slice(2)], {
+    stdio: "inherit",
+    env: { ...process.env, WORKBENCH_NODE_REEXEC: "1" },
+  });
+  process.exit(r.status ?? 1);
+}
+
 async function main() {
+  if (!process.env.WORKBENCH_NODE_REEXEC) reexecWithGoodNode();
   console.log(`[hosted] node ${process.version} / ${process.platform} / cwd=${ROOT}`);
   console.log(`[hosted] vite 入口：${VITE_ENTRY}（${existsSync(VITE_ENTRY) ? "存在" : "缺失"}）`);
 

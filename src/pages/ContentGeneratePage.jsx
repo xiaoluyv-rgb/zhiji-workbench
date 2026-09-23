@@ -775,9 +775,28 @@ export function ContentGeneratePage() {
                   <p className="cg-elapsed">
                     {"生成耗时 "}
                     {((result.elapsedMs || 0) / 1000).toFixed(1)}s
-                    {result.demoMode ? " · 演示模式（未配置 LLM，模板兜底）" : " · AI 生成"}
+                    {result.demoMode ? " · 演示模式（模板兜底）" : " · AI 生成"}
                     {result.llmFallback ? " · LLM 失败已回退模板" : ""}
                   </p>
+                  {/* 演示模式有两种成因，不说清楚的话会误以为是功能坏了 */}
+                  {result.demoMode && !result.llmFallback ? (
+                    <p className="cg-hint">
+                      {import.meta.env.VITE_WORKBENCH_HOSTED === "true"
+                        ? "网页版没有服务端，AI 需要你自己的 Key —— 填在「设置」里，只存在这台浏览器，换设备或清缓存要重填。"
+                        : "本地版读项目根目录 .env 里的 OPENAI_API_KEY，改完要重启工作台才会生效。"}
+                      {import.meta.env.VITE_WORKBENCH_HOSTED === "true" ? (
+                        <>
+                          {" "}
+                          <a className="cg-hint__link" href="/settings">
+                            去设置 →
+                          </a>
+                        </>
+                      ) : null}
+                    </p>
+                  ) : null}
+                  {result.llmError ? (
+                    <p className="cg-hint">调用失败原因：{result.llmError}</p>
+                  ) : null}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button className="btn btn--ghost" onClick={copyAll} type="button">
