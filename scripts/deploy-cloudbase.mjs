@@ -47,7 +47,8 @@ function pickCli() {
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd: ROOT, stdio: "inherit", shell: false });
+    // cloudbase CLI 是 #!/bin/sh 脚本，Windows 上必须交给 shell 才能执行
+    const child = spawn(command, args, { cwd: ROOT, stdio: "inherit", shell: true });
     child.on("error", reject);
     child.on("close", (code) => {
       if (code === 0) resolve();

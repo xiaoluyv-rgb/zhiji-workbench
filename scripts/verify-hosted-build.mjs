@@ -31,6 +31,7 @@ const ROUTES = [
 const API_PROBES = {
   "/content-generate": `fetch('/api/content/models').then(r=>r.json()).then(d=>({models:(d.items||[]).length, names:(d.items||[]).map(m=>m.name).join('、')})).catch(e=>({error:String(e)}))`,
   "/materials": `fetch('/api/car-reference').then(r=>r.json()).then(d=>({models:d.tree?.[0]?.models?.length||0, images:d.tree?.[0]?.models?.reduce((n,m)=>n+(m.images?.length||0),0)||0, err:d.error?.code||null})).catch(e=>({error:String(e)}))`,
+  "/knowledge/creation": `fetch('/api/creation-materials').then(r=>r.json()).then(d=>({models:d.tree?.[0]?.models?.length||0, images:d.tree?.[0]?.models?.reduce((n,m)=>n+(m.images?.length||0),0)||0, err:d.error?.code||null})).catch(e=>({error:String(e)}))`,
   "/daily-hot": `fetch('/api/daily-hot/sources').then(r=>r.json()).then(d=>({total:d.total??(d.items||[]).length, stale:!!d.stale})).catch(e=>({error:String(e)}))`,
   "/content-review": `fetch('/api/content/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'🚗智己L6真香，CLTC续航660km，零百2.74s，太强了！',model:'智己 L6',title:'🚗智己L6太香了'})}).then(r=>r.json()).then(d=>({passed:d.passed,score:d.score,issues:d.issueCount,title:d.titleReport?Math.round(d.titleReport.score||0):null,err:d.error?.code||null})).catch(e=>({error:String(e)}))`,
 };

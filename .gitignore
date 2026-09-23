@@ -16,12 +16,11 @@ server/.feishu-media-cache/
 # (.gitignore 历史的经典陷阱：写 data/ 会把 src/data/fallback.js 一起忽略)
 
 # 飞书图片镜像二进制。
-# ⚠️ 车型参考图（feishu-materials）必须入库：网页版部署在 Cloudflare 上，
-#    构建机没有 lark-cli 也没有飞书凭据，不入仓的话线上「车型资料库」会是空的。
-#    创作知识库（feishu-creation-materials）仅在本地版使用，继续不入仓以控制体积。
+# ⚠️ 这两批图都必须入库：网页版部署在云上，构建机没有 lark-cli 也没有飞书凭据，
+#    不入仓的话线上「车型资料库」「创作知识库」都会是空的。
 public/feishu-materials/*.tmp
-public/feishu-creation-materials/*
-!public/feishu-creation-materials/manifest.json
+public/feishu-creation-materials/*.tmp
+public/feishu-creation-materials/.cache/
 
 # 飞书账号与节点 token 映射（每个使用者各自配，不入公开仓）
 server/feishu-sources.json

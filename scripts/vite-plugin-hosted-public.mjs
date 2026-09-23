@@ -10,8 +10,10 @@ import { cp, readdir, mkdir, stat, readFile, writeFile } from "node:fs/promises"
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-// 车型参考图 —— 已入库，网页版「车型资料库」的核心内容
-const KEEP_DIRS = ["feishu-materials"];
+// 已入库、且网页版要用的图库：
+//   feishu-materials          → 车型参考图（车型资料库）
+//   feishu-creation-materials → 创作素材图（创作知识库）
+const KEEP_DIRS = ["feishu-materials", "feishu-creation-materials"];
 
 // 前端路由。静态托管（CloudBase / COS）默认只认真实文件，/settings 这种路径会 404。
 // 这里为每条路由生成一份 index.html 副本，比改云端「错误文档」更可控：

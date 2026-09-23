@@ -11,7 +11,7 @@
     "build": "node scripts/build-hosted.mjs && node scripts/prepare-sites-build.mjs",
     "build:hosted": "node scripts/build-hosted.mjs",
     "deploy": "wrangler deploy",
-    "deploy:cloudbase": "node scripts/deploy-cloudbase.mjs",
+    "deploy:cloudbase": "npm run build:hosted && node scripts/deploy-cloudbase.mjs",
     "preview": "vite preview",
     "postinstall": "node scripts/ensure-fallback.mjs",
     "test:authenticity": "node --test tests/data-authenticity.test.mjs",

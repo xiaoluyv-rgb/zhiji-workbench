@@ -72,29 +72,41 @@ function appendHistory(record) {
   writeHistory(list);
 }
 
-// ---------- 车型参考图（静态镜像） ----------
-let manifestCache = null;
+// ---------- 飞书图库静态镜像 ----------
+// car       → public/feishu-materials          （车型资料库）
+// creation  → public/feishu-creation-materials （创作知识库）
+const SLOTS = {
+  car: { manifest: "/feishu-materials/manifest.json", dir: "feishu-materials", label: "车型参考图" },
+  creation: {
+    manifest: "/feishu-creation-materials/manifest.json",
+    dir: "feishu-creation-materials",
+    label: "创作素材图",
+  },
+};
 
-async function getManifest() {
-  if (manifestCache !== null) return manifestCache;
+const manifestCache = {};
+
+async function getManifest(slotKey = "car") {
+  if (manifestCache[slotKey] !== undefined) return manifestCache[slotKey];
   try {
-    const resp = await originalFetch("/feishu-materials/manifest.json", { cache: "no-cache" });
+    const resp = await originalFetch(SLOTS[slotKey].manifest, { cache: "no-cache" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    manifestCache = await resp.json();
+    manifestCache[slotKey] = await resp.json();
   } catch {
-    manifestCache = { __missing: true, models: {}, total: 0 };
+    manifestCache[slotKey] = { __missing: true, models: {}, total: 0 };
   }
-  return manifestCache;
+  return manifestCache[slotKey];
 }
 
 function dirName(modelBase) {
   return String(modelBase || "未分类").trim().replace(/[\\/:*?"<>|]/g, "-") || "未分类";
 }
 
-async function carReferenceTree() {
-  const m = await getManifest();
+async function materialTree(slotKey = "car") {
+  const slot = SLOTS[slotKey];
+  const m = await getManifest(slotKey);
   if (m?.__missing || !m?.models) {
-    return errorResponse(503, "CAR_REFERENCE_UNAVAILABLE", "网页版未打包车型参考图镜像。");
+    return errorResponse(503, "MATERIALS_UNAVAILABLE", `网页版未打包${slot.label}镜像。`);
   }
   const brand = m.brand || "智己";
   const models = Object.entries(m.models).map(([modelBase, md]) => ({
@@ -104,9 +116,9 @@ async function carReferenceTree() {
     imageCount: (md.images || []).length,
     images: (md.images || []).map((im) => ({
       name: im.name,
-      file: `feishu-materials/${dirName(modelBase)}/${im.name}`,
+      file: `${slot.dir}/${dirName(modelBase)}/${im.name}`,
       // 网页版直接指向静态文件，不再走 /api/feishu-media 代理
-      url: `/feishu-materials/${dirName(modelBase)}/${encodeURIComponent(im.name)}`,
+      url: `/${slot.dir}/${dirName(modelBase)}/${encodeURIComponent(im.name)}`,
       size: im.size || 0,
       intro: im.caption || "",
       mediaState: 2,
@@ -120,7 +132,7 @@ async function carReferenceTree() {
   return jsonResponse({
     tree: [{ brand, models }],
     total: m.total || models.reduce((n, x) => n + x.imageCount, 0),
-    root: "public/feishu-materials",
+    root: `public/${slot.dir}`,
     feishu: {
       synced: true,
       syncedAt: m.syncedAt || null,
@@ -132,10 +144,14 @@ async function carReferenceTree() {
 }
 
 async function resolveFeishuMedia(token) {
-  const m = await getManifest();
-  for (const [modelBase, md] of Object.entries(m.models || {})) {
-    const hit = (md.images || []).find((im) => im.fileToken === token);
-    if (hit) return `/feishu-materials/${dirName(modelBase)}/${encodeURIComponent(hit.name)}`;
+  for (const slotKey of Object.keys(SLOTS)) {
+    const m = await getManifest(slotKey);
+    for (const [modelBase, md] of Object.entries(m.models || {})) {
+      const hit = (md.images || []).find((im) => im.fileToken === token);
+      if (hit) {
+        return `/${SLOTS[slotKey].dir}/${dirName(modelBase)}/${encodeURIComponent(hit.name)}`;
+      }
+    }
   }
   return null;
 }
@@ -235,12 +251,12 @@ async function handleApi(method, pathname, searchParams, body) {
     return errorResponse(501, "HOSTED_READ_ONLY", "网页版不支持写回个人知识库，请在本地版操作。");
   }
 
-  // 车型参考图
+  // 车型参考图 / 创作素材图（静态镜像）
   if (method === "GET" && pathname === "/api/car-reference") {
-    return carReferenceTree();
+    return materialTree("car");
   }
   if (method === "GET" && pathname === "/api/creation-materials") {
-    return jsonResponse({ tree: [], total: 0, hosted: true, unavailable: true, note: "创作知识库镜像未随网页版发布。" });
+    return materialTree("creation");
   }
   if (method === "GET" && pathname.startsWith("/api/feishu-media/")) {
     const token = decodeURIComponent(pathname.slice("/api/feishu-media/".length));
