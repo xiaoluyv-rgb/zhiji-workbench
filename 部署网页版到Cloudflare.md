@@ -29,6 +29,8 @@
 > （界面上是 Build command / Deploy command / Preview command），
 > 不是老的 Pages 流程。仓库里的 `wrangler.toml` 已按 Workers 配好，照下面填即可。
 
+### 2.1 首次创建
+
 1. Cloudflare Dashboard → **Create an app** → **Select a repository** → 选 `xiaoluyv-rgb/zhiji-workbench`
 2. 在「Set up your application」这一页**只改一个字段**：
 
@@ -40,6 +42,27 @@
    | Preview command | `npx wrangler preview`（保持默认） |
 
 3. 点 **Deploy**，等两三分钟
+
+### 2.2 ⚠️ 如果 Build command 显示成 `None`
+
+项目建好之后进入的是 **Builds / Deployments** 页面，那个一次性表单就不再出现了。
+如果发现 **Build command 那一行是 `None`**，Cloudflare 会**完全跳过构建阶段**，
+直接跑 `npx wrangler deploy` —— 它找不到 `dist/client`，于是报错：
+
+```
+Build command: None
+Deploying ✗   ← 失败在这一步，日志里一条构建输出都没有
+```
+
+补法（两个入口任选其一）：
+
+- **入口 A（推荐）**：项目页顶部 **Settings** → 找 **Build** 区块 → **Build command** 填
+  `npm run build:hosted` → 保存 → 回 **Deployments** → 点右上角 **Retry build**
+- **入口 B**：把 **Deploy command** 从 `npx wrangler deploy` 改成
+  `npm run build:hosted && npx wrangler deploy`（构建与部署合并，一样能跑）
+
+判断有没有生效：构建成功后，Builds 页面会多出一个绿色的 **Building** 阶段，
+且日志里能看到 `[hosted] node v... / cwd=...` 这一行。
 
 不需要填输出目录、也不需要填 Node 版本 —— `wrangler.toml` 里已经写死了：
 
