@@ -8,7 +8,7 @@
     "test": "npm run build && node --test --test-concurrency=1 tests/*.test.mjs",
     "privacy:scan": "node scripts/privacy-scan.mjs",
     "demo:generate": "node scripts/generate-demo-douyin.mjs",
-    "build": "VITE_WORKBENCH_HOSTED=true vite build && node scripts/prepare-sites-build.mjs",
+    "build": "node scripts/build-hosted.mjs && node scripts/prepare-sites-build.mjs",
     "build:hosted": "node scripts/build-hosted.mjs",
     "deploy": "wrangler deploy",
     "preview": "vite preview",
