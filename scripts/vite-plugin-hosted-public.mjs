@@ -1,19 +1,20 @@
-// 网页版构建专用：只把「网页版用得到」的静态资源拷进产物。
+// 网页版构建专用：把 public/ 拷进产物。
 //
-// public/ 里除了车型参考图，还有近 100MB 的本地缓存图（ima-materials、car-reference），
-// 那些在网页版都不会被引用，跟着发布只会拖慢部署、撑爆 Pages/Workers 配额。
-// 因此托管构建关掉 Vite 默认的整目录拷贝，改成这里按需挑选。
+// 默认策略 = 「本地镜像」：public/ 里有什么就发什么，保证线上和本地看到的完全一致。
+// 想瘦身时用环境变量指定不发布的目录（逗号分隔，相对 public/）：
+//   HOSTED_PUBLIC_EXCLUDE=car-reference,ima-materials npm run build:hosted
 //
-// ⚠️ 只保留「一定入库」的目录：CI 上被 .gitignore 掉的目录并不存在，
-//    对缺失目录做 cp 会直接让构建失败。
+// 注意 .cache/ 是抓取缓存，任何时候都不发布。
 import { cp, readdir, mkdir, stat, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-// 已入库、且网页版要用的图库：
-//   feishu-materials          → 车型参考图（车型资料库）
-//   feishu-creation-materials → 创作素材图（创作知识库）
-const KEEP_DIRS = ["feishu-materials", "feishu-creation-materials"];
+const EXCLUDE = new Set(
+  (process.env.HOSTED_PUBLIC_EXCLUDE || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+);
 
 // 前端路由。静态托管（CloudBase / COS）默认只认真实文件，/settings 这种路径会 404。
 // 这里为每条路由生成一份 index.html 副本，比改云端「错误文档」更可控：
@@ -29,6 +30,21 @@ const SPA_ROUTES = [
   "daily-hot",
   "system",
 ];
+
+async function dirSize(dir) {
+  let total = 0;
+  let stack = [dir];
+  while (stack.length) {
+    const current = stack.pop();
+    const entries = await readdir(current, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else total += (await stat(full)).size;
+    }
+  }
+  return total;
+}
 
 async function existsDir(dir) {
   try {
@@ -50,15 +66,17 @@ export function hostedPublicAssetsPlugin(root) {
       const entries = await readdir(publicDir, { withFileTypes: true });
       const copied = [];
       const skipped = [];
+      let bytes = 0;
       for (const entry of entries) {
         const from = path.join(publicDir, entry.name);
         if (entry.isFile()) {
           await cp(from, path.join(outDir, entry.name));
+          bytes += (await stat(from)).size;
           copied.push(entry.name);
           continue;
         }
-        if (!KEEP_DIRS.includes(entry.name)) {
-          if (entry.name !== ".cache") skipped.push(entry.name);
+        if (entry.name === ".cache" || EXCLUDE.has(entry.name)) {
+          skipped.push(entry.name);
           continue;
         }
         if (!(await existsDir(from))) {
@@ -66,11 +84,13 @@ export function hostedPublicAssetsPlugin(root) {
           continue;
         }
         await cp(from, path.join(outDir, entry.name), { recursive: true });
+        bytes += await dirSize(from);
         copied.push(`${entry.name}/`);
       }
-      console.log(`[hosted-assets] 已复制：${copied.join("、")}`);
+      console.log(`[hosted-assets] 已镜像：${copied.join("、")}`);
+      console.log(`[hosted-assets] 静态资源合计 ${(bytes / 1024 / 1024).toFixed(1)}MB`);
       if (skipped.length) {
-        console.log(`[hosted-assets] 未发布（网页版用不到）：${skipped.join("、")}`);
+        console.log(`[hosted-assets] 未发布：${skipped.join("、")}`);
       }
 
       // SPA 路由兜底：/settings → settings/index.html

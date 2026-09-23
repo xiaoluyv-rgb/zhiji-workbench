@@ -45,10 +45,20 @@ function pickCli() {
   return CLI_CANDIDATES[1];
 }
 
+// cloudbase CLI 是 #!/bin/sh 脚本，Windows 上不能直接执行：
+//   - spawn(cli, args)                      → ENOENT（不是可执行文件）
+//   - spawn(cli, args, { shell: true })     → 走 cmd.exe，会卡死（34 分钟零输出实测）
+// 唯一可靠的是交给 Git Bash 执行。
+function toPosix(p) {
+  return p.replace(/\\/g, "/");
+}
+
 function run(command, args) {
   return new Promise((resolve, reject) => {
-    // cloudbase CLI 是 #!/bin/sh 脚本，Windows 上必须交给 shell 才能执行
-    const child = spawn(command, args, { cwd: ROOT, stdio: "inherit", shell: true });
+    const win = process.platform === "win32";
+    const child = win
+      ? spawn("bash", [toPosix(command), ...args], { cwd: ROOT, stdio: "inherit" })
+      : spawn(command, args, { cwd: ROOT, stdio: "inherit" });
     child.on("error", reject);
     child.on("close", (code) => {
       if (code === 0) resolve();

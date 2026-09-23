@@ -41,16 +41,31 @@ async function main() {
     );
   }
 
+  // 托管模式的开关一定要在这里设好：vite.config.mjs 是在 import("vite") 时才读的，
+  // 用子进程传环境变量在 Windows 上不可靠（cmd.exe 不认 `VAR=x cmd`）。
+  process.env.VITE_WORKBENCH_HOSTED = "true";
+  process.env.NODE_OPTIONS =
+    `${process.env.NODE_OPTIONS || ""} --max-old-space-size=4096`.trim();
+
   // 1. 生成静态快照（缺 Vault / 连不上本地服务时会沿用仓库里已提交的快照）
   await run("生成静态快照", process.execPath, [SNAPSHOT]);
 
   // 2. 托管模式打包
-  await run("打包前端", process.execPath, [VITE_ENTRY, "build"], {
-    VITE_WORKBENCH_HOSTED: "true",
-    NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --max-old-space-size=4096`.trim(),
+  //
+  // ⚠️ 这里必须用 vite 的 JS API，不能用子进程跑 vite CLI：
+  //    CLI 打包完成后进程不会退出（esbuild 等服务仍挂着句柄），
+  //    实测卡死 34 分钟无任何输出，后面的部署命令永远等不到执行。
+  //    build() 本身会正常 resolve，结束后显式 process.exit(0) 收尾。
+  console.log("\n===== [hosted] 打包前端 =====");
+  const { build } = await import("vite");
+  await build({
+    configFile: path.join(ROOT, "vite.config.mjs"),
+    root: ROOT,
+    logLevel: "info",
   });
 
   console.log("\n[hosted] 构建完成，产物在 dist/client");
+  process.exit(0);
 }
 
 main().catch((error) => {
