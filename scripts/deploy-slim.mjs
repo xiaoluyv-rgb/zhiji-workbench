@@ -7,12 +7,13 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { preferredNode } from "./pick-node.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function runNode(script, env = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(ROOT, "scripts", script)], {
+    const child = spawn(preferredNode(), [path.join(ROOT, "scripts", script)], {
       cwd: ROOT,
       stdio: "inherit",
       env: { ...process.env, ...env },
