@@ -107,3 +107,6 @@ preview-hosted.log
 
 # 共享 LLM 服务的访问口令（本地生成，不进仓库）
 .llm-proxy-token.txt
+
+# 共享 LLM 服务的访问口令（本地生成，不进仓库）
+.llm-proxy-token.txt
