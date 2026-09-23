@@ -1,0 +1,10 @@
+{
+  "name": "feishu-media",
+  "version": "1.0.0",
+  "description": "按需从飞书拉取知识库图片并缓存到云存储，供网页版直读",
+  "main": "index.js",
+  "runtime": "Nodejs18",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.16.0"
+  }
+}

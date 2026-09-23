@@ -84,22 +84,41 @@ const SLOTS = {
   },
 };
 
+// 图片走 CDN / 云函数时的地址前缀。留空则读站点自带的静态镜像。
+// 配了 VITE_MEDIA_BASE 之后，图片不再打进站点，由云端同步服务按需从飞书拉取并缓存。
+const MEDIA_BASE = String(import.meta.env?.VITE_MEDIA_BASE || "").replace(/\/+$/, "");
+
 const manifestCache = {};
+
+function manifestUrl(slot) {
+  return MEDIA_BASE ? `${MEDIA_BASE}${slot.manifest}` : slot.manifest;
+}
 
 async function getManifest(slotKey = "car") {
   if (manifestCache[slotKey] !== undefined) return manifestCache[slotKey];
-  try {
-    const resp = await originalFetch(SLOTS[slotKey].manifest, { cache: "no-cache" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    manifestCache[slotKey] = await resp.json();
-  } catch {
-    manifestCache[slotKey] = { __missing: true, models: {}, total: 0 };
+  const slot = SLOTS[slotKey];
+  const sources = MEDIA_BASE ? [manifestUrl(slot), slot.manifest] : [slot.manifest];
+  for (const url of sources) {
+    try {
+      const resp = await originalFetch(url, { cache: "no-cache" });
+      if (!resp.ok) continue;
+      manifestCache[slotKey] = await resp.json();
+      return manifestCache[slotKey];
+    } catch {
+      /* 换下一个来源 */
+    }
   }
+  manifestCache[slotKey] = { __missing: true, models: {}, total: 0 };
   return manifestCache[slotKey];
 }
 
 function dirName(modelBase) {
   return String(modelBase || "未分类").trim().replace(/[\\/:*?"<>|]/g, "-") || "未分类";
+}
+
+function mediaUrl(slotKey, modelBase, name) {
+  const rel = `/${SLOTS[slotKey].dir}/${dirName(modelBase)}/${encodeURIComponent(name)}`;
+  return MEDIA_BASE ? `${MEDIA_BASE}${rel}` : rel;
 }
 
 async function materialTree(slotKey = "car") {
@@ -117,8 +136,7 @@ async function materialTree(slotKey = "car") {
     images: (md.images || []).map((im) => ({
       name: im.name,
       file: `${slot.dir}/${dirName(modelBase)}/${im.name}`,
-      // 网页版直接指向静态文件，不再走 /api/feishu-media 代理
-      url: `/${slot.dir}/${dirName(modelBase)}/${encodeURIComponent(im.name)}`,
+      url: mediaUrl(slotKey, modelBase, im.name),
       size: im.size || 0,
       intro: im.caption || "",
       mediaState: 2,
@@ -137,8 +155,10 @@ async function materialTree(slotKey = "car") {
       synced: true,
       syncedAt: m.syncedAt || null,
       total: m.total || 0,
-      source: "网页版静态镜像",
-      note: "图片随站点一起发布，无需飞书登录。",
+      source: MEDIA_BASE ? "云端同步（飞书 → 对象存储）" : "网页版静态镜像",
+      note: MEDIA_BASE
+        ? "图片由云端服务从飞书同步，无需飞书登录。"
+        : "图片随站点一起发布，无需飞书登录。",
     },
   });
 }
@@ -149,7 +169,7 @@ async function resolveFeishuMedia(token) {
     for (const [modelBase, md] of Object.entries(m.models || {})) {
       const hit = (md.images || []).find((im) => im.fileToken === token);
       if (hit) {
-        return `/${SLOTS[slotKey].dir}/${dirName(modelBase)}/${encodeURIComponent(hit.name)}`;
+        return mediaUrl(slotKey, modelBase, hit.name);
       }
     }
   }
