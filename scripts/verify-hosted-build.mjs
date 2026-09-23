@@ -63,6 +63,8 @@ async function main() {
       "--no-first-run",
       "--no-default-browser-check",
       "--disable-extensions",
+      // 系统代理会把外网域名拦成 404（curl 直连正常、浏览器全挂就是这个原因）
+      "--no-proxy-server",
       `--remote-debugging-port=${DEBUG_PORT}`,
       `--user-data-dir=${profile}`,
       "about:blank",
