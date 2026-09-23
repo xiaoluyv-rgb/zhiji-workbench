@@ -23,28 +23,36 @@
 
 ---
 
-## 二、部署（两种方式，选一种）
+## 二、部署（Cloudflare Workers + 静态资源）
 
-### 方式 A：接 GitHub（推荐，推 git 即部署）
+> 注意：Cloudflare 现在「Create an app → 选仓库」走的是 **Workers** 流程
+> （界面上是 Build command / Deploy command / Preview command），
+> 不是老的 Pages 流程。仓库里的 `wrangler.toml` 已按 Workers 配好，照下面填即可。
 
-1. 打开 Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. 选中 `xiaoluyv-rgb/zhiji-workbench` 仓库
-3. 构建配置填：
-   - Framework preset：`None`
-   - Build command：`npm run build:hosted`
-   - Build output directory：`dist/client`
-   - Node version：`22`
-4. Save and Deploy
+1. Cloudflare Dashboard → **Create an app** → **Select a repository** → 选 `xiaoluyv-rgb/zhiji-workbench`
+2. 在「Set up your application」这一页**只改一个字段**：
 
-之后你每次 `git push`，Cloudflare 自动重新构建发布 —— **同事刷新页面就是最新版**。
+   | 字段 | 填什么 |
+   | --- | --- |
+   | Project name | `zhiji-workbench`（默认即可） |
+   | **Build command** | **`npm run build:hosted`** ← 只改这个 |
+   | Deploy command | `npx wrangler deploy`（保持默认） |
+   | Preview command | `npx wrangler preview`（保持默认） |
 
-### 方式 B：命令行手动发
+3. 点 **Deploy**，等两三分钟
 
-```bash
-npm run deploy:pages
+不需要填输出目录、也不需要填 Node 版本 —— `wrangler.toml` 里已经写死了：
+
+```toml
+main    = "worker/index.js"        # 承接 /api/llm-proxy 转发
+[assets]
+directory = "dist/client"          # 构建产物目录
+not_found_handling = "single-page-application"   # 刷新子页面不 404
 ```
 
-首次会要求登录 Cloudflare 账号。适合不想把仓库接到 Cloudflare 的情况。
+Node 版本由仓库根目录的 `.node-version`（22）指定。
+
+之后你每次 `git push`，Cloudflare 自动重新构建发布 —— **同事刷新页面就是最新版**。
 
 ---
 
@@ -74,7 +82,7 @@ Key 只写进他自己的浏览器，不会传给我们、不会进仓库、别�
 
 - **默认生成的网址是公开的**，任何拿到链接的人都能打开。里面含车型参数、权益与创作知识库内容。
   - 建议：Cloudflare Dashboard → 该项目 → **Settings → Access** → 加一条策略，只允许公司邮箱/指定邮箱访问（Cloudflare Access 免费额度足够小团队用）。
-- `functions/api/llm-proxy.js` 只允许转发到白名单域名（DeepSeek / OpenAI / 智谱 / Moonshot / 通义 / SiliconFlow），且**不保存任何 Key、不写日志**。要新增厂商，改这个文件里的 `ALLOWED_HOSTS`。
+- `worker/index.js` 里的 `/api/llm-proxy` 只允许转发到白名单域名（DeepSeek / OpenAI / 智谱 / Moonshot / 通义 / SiliconFlow），且**不保存任何 Key、不写日志**。要新增厂商，改这个文件里的 `ALLOWED_HOSTS`。
 - `.env` 里的 Key 不会被打进网页版（托管构建只从浏览器 localStorage 读 Key）。
 
 ---
@@ -91,4 +99,7 @@ Key 只写进他自己的浏览器，不会传给我们、不会进仓库、别�
 那是构建时没抓到（本地 dev server 没开）。按第四节重新生成快照再推一次。
 
 **Q：页面刷新后 404？**
-`functions/[[catchall]].js` 负责兜底，确认它随部署一起上传了（Git 方式会自动带上）。
+SPA 兜底由 `wrangler.toml` 的 `not_found_handling = "single-page-application"` + `worker/index.js` 共同负责，确认 `wrangler.toml` 已推到仓库。
+
+**Q：部署报错 `Could not resolve "dist/client"`？**
+说明构建命令没跑成功。确认 Build command 填的是 `npm run build:hosted`（不是默认的 `npm run build`）。

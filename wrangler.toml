@@ -1,13 +1,20 @@
-# Cloudflare Pages 配置（网页版部署用）
-# 面板里看不到「输出目录」时，Cloudflare 会读这个文件兜底。
-name = "zhiji-xhs-workbench"
+# Cloudflare 部署配置（Workers + 静态资源）
+#
+# 为什么是 Workers 而不是 Pages：Cloudflare 现在「Create an app → 选仓库」走的是
+# Workers 流程（Build command / Deploy command / Preview command），Pages 那套
+# functions/ 目录在这里不生效，所以把转发代理挪进了 worker/index.js。
+name = "zhiji-workbench"
 compatibility_date = "2026-09-01"
 
+# Worker 入口：承接 /api/llm-proxy 转发，其余请求交给静态资源
+main = "worker/index.js"
+
+[assets]
 # 构建产物目录，与 vite.config.mjs 的 build.outDir 一致
-pages_build_output_dir = "dist/client"
+directory = "dist/client"
+binding = "ASSETS"
+# 前端是单页应用，未命中的路径回落到 index.html，刷新 /settings 不会 404
+not_found_handling = "single-page-application"
 
-[build]
-# 构建命令：先生成静态快照，再以「网页版」模式打包
-command = "npm run build:hosted"
-
-# Node 版本由仓库根目录的 .node-version（22）指定，不需要在这里写
+[observability]
+enabled = true

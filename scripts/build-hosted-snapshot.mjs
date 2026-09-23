@@ -82,6 +82,15 @@ async function fetchLive(base) {
 }
 
 async function main() {
+  // 已有快照：CI（Cloudflare）上没有本机 Vault、也连不上本地 dev server，
+  // 这时必须以仓库里已提交的快照为准，不能把内容清空覆盖掉。
+  let existing = null;
+  try {
+    existing = JSON.parse(await readFile(OUT, "utf8"));
+  } catch {
+    existing = null;
+  }
+
   const vaultFiles = [];
   await walkMd(path.join(VAULT_ROOT, "wiki"), "wiki", vaultFiles);
   const seedFiles = [];
@@ -102,17 +111,34 @@ async function main() {
   }
 
   const apiBase = process.env.WORKBENCH_SNAPSHOT_API || "";
-  const live = apiBase ? await fetchLive(apiBase.replace(/\/$/, "")) : {
-    overview: null, socialInsights: null, socialTrends: null,
-    dailyHotSources: null, dailyHotPlatform: null, dailyHotAuto: null, dailyHotCreative: null,
-  };
+  const fetched = apiBase
+    ? await fetchLive(apiBase.replace(/\/$/, ""))
+    : {
+        overview: null, socialInsights: null, socialTrends: null,
+        dailyHotSources: null, dailyHotPlatform: null, dailyHotAuto: null, dailyHotCreative: null,
+      };
+
+  // 抓不到就用上一次已提交的数据，避免「CI 构建把热点清空」
+  const live = {};
+  for (const [key, value] of Object.entries(fetched)) {
+    live[key] = value ?? existing?.live?.[key] ?? null;
+  }
+
+  const vaultObj =
+    vaultFiles.length > 0 ? Object.fromEntries(vaultFiles) : existing?.vault || {};
+  const seedObj =
+    seedFiles.length > 0 ? Object.fromEntries(seedFiles) : existing?.seed || {};
+
+  if (vaultFiles.length === 0 && existing?.vault) {
+    console.log(`[snapshot] 未找到本机 Vault，沿用已提交的 ${Object.keys(existing.vault).length} 篇`);
+  }
 
   const snapshot = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
-    vault: Object.fromEntries(vaultFiles),
-    seed: Object.fromEntries(seedFiles),
-    viralLibrary,
+    vault: vaultObj,
+    seed: seedObj,
+    viralLibrary: viralLibrary || existing?.viralLibrary || null,
     live,
   };
 
