@@ -110,3 +110,6 @@ preview-hosted.log
 
 # 共享 LLM 服务的访问口令（本地生成，不进仓库）
 .llm-proxy-token.txt
+
+# 云函数部署配置：含 LLM_API_KEY，禁止入仓（本机生成，用 scripts/deploy-llm-proxy.mjs 重建）
+cloudbaserc.json
