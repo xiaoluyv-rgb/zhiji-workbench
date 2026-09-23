@@ -31,7 +31,8 @@
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "deploy:media-fn": "node scripts/deploy-media-fn.mjs",
     "deploy:media": "node scripts/deploy-media.mjs",
-    "deploy:slim": "node scripts/deploy-slim.mjs"
+    "deploy:slim": "node scripts/deploy-slim.mjs",
+    "deploy:llm-proxy": "node scripts/deploy-llm-proxy.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.3.0",

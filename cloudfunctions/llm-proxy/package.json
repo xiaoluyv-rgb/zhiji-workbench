@@ -1,0 +1,7 @@
+{
+  "name": "llm-proxy",
+  "version": "1.0.0",
+  "description": "网页版的大模型代理：自带 Key 透传，或走团队共享 Key（需访问口令）",
+  "main": "index.js",
+  "runtime": "Nodejs18"
+}

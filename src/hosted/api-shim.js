@@ -12,7 +12,7 @@
 
 import snapshotJson from "./snapshot.json";
 import { installSnapshot, getSnapshot } from "./virtual-fs.js";
-import { installProcessShim, isConfigured } from "./env.js";
+import { installProcessShim, isConfigured, getApiKey, llmProxy, llmToken } from "./env.js";
 import {
   generateContent,
   reviewContent,
@@ -348,26 +348,55 @@ async function handleApi(method, pathname, searchParams, body) {
 // ---------- LLM 跨域兜底 ----------
 // 浏览器直连 api.deepseek.com 可能被 CORS 拦（TypeError）。
 // 这时自动改走同域的 /api/llm-proxy（Cloudflare Pages Function，只转发、不存 Key、不记日志）。
-const LLM_HOST_RE = /^https:\/\/(api\.deepseek\.com|api\.openai\.com|open\.bigmodel\.cn|api\.moonshot\.cn|dashscope\.aliyuncs\.com)(\/|$)/;
+const LLM_PROXY = String(llmProxy?.() || "").replace(/\/+$/, "");
+const LLM_TOKEN = String(llmToken?.() || "");
+
+const LLM_HOST_RE = /^https:\/\/(api\.deepseek\.com|api\.openai\.com|open\.bigmodel\.cn|api\.moonshot\.cn|dashscope\.aliyuncs\.com|api\.siliconflow\.cn)(\/|$)/;
+
+// 托管站点的 LLM 代理（CloudBase 云函数）。配了 VITE_LLM_PROXY 才启用。
+//  - 用户自己填了 Key  → 透传，云函数不存 Key
+//  - 没填 Key          → 走团队共享 Key（云函数校验 x-access-token）
+function callLlmProxy(url, init, ownKey) {
+  const headers = new Headers(init?.headers || {});
+  headers.set("x-llm-target", String(url));
+  headers.delete("Authorization");
+  if (ownKey) headers.set("x-api-key", ownKey);
+  if (LLM_TOKEN) headers.set("x-access-token", LLM_TOKEN);
+  return originalFetch(LLM_PROXY, {
+    method: init?.method || "POST",
+    headers,
+    body: init?.body,
+    signal: init?.signal,
+  });
+}
+
+async function badProxy(resp) {
+  const text = await resp.text().catch(() => "");
+  return new Error(
+    `LLM 代理返回 HTTP ${resp.status}：${text.slice(0, 200)}` +
+      (resp.status === 402 ? "（共享 Key 未配置，请在设置页填自己的 Key）" : ""),
+  );
+}
 
 async function fetchLlmWithFallback(url, init) {
+  const ownKey = getApiKey();
+
+  // 没填自己的 Key：只能走共享代理，直连必然失败
+  if (LLM_PROXY && !ownKey) {
+    const resp = await callLlmProxy(url, init, null);
+    if (!resp.ok) throw await badProxy(resp);
+    return resp;
+  }
+
   try {
     return await originalFetch(url, init);
   } catch (e) {
     const target = String(url);
-    if (!LLM_HOST_RE.test(target)) throw e;
-    const headers = new Headers(init?.headers || {});
-    headers.set("x-llm-target", target);
-    const resp = await originalFetch("/api/llm-proxy", {
-      method: init?.method || "POST",
-      headers,
-      body: init?.body,
-      signal: init?.signal,
-    });
-    if (!resp.ok && resp.status >= 400) {
-      const text = await resp.text().catch(() => "");
-      throw new Error(`LLM 请求失败：HTTP ${resp.status} ${text.slice(0, 200)}`);
-    }
+    // 配了云上代理就走它，否则退回同域 /api/llm-proxy（Cloudflare Workers 那条路）
+    const via = LLM_PROXY || (LLM_HOST_RE.test(target) ? "/api/llm-proxy" : null);
+    if (!via) throw e;
+    const resp = await callLlmProxy(url, init, ownKey);
+    if (!resp.ok && resp.status >= 400) throw await badProxy(resp);
     return resp;
   }
 }

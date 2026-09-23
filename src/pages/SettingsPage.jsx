@@ -1,10 +1,20 @@
 import { useState } from "react";
 import { PageHeader } from "../components/PageHeader";
-import { getApiKey, setApiKey, getBaseUrl, setBaseUrl, getModel, setModel } from "../hosted/env";
+import {
+  getApiKey,
+  setApiKey,
+  getBaseUrl,
+  setBaseUrl,
+  getModel,
+  setModel,
+  hasSharedProxy,
+} from "../hosted/env";
 
 // 网页版专用：每个人填自己的大模型 Key。
 // Key 只写进当前浏览器 localStorage，不发往任何服务端、不进仓库、不共享给其他使用者。
+// 若站点配了共享代理（VITE_LLM_PROXY + VITE_LLM_TOKEN），不填也能用团队 Key。
 export function SettingsPage() {
+  const shared = hasSharedProxy();
   const [apiKey, setApiKeyState] = useState(() => getApiKey());
   const [baseUrl, setBaseUrlState] = useState(() => getBaseUrl());
   const [model, setModelState] = useState(() => getModel());
@@ -62,12 +72,20 @@ export function SettingsPage() {
         description="网页版不保存任何人的密钥 —— 你填的 Key 只留在你这台浏览器里"
       />
 
+      {shared ? (
+        <div className="materials-notice" role="status">
+          <span>
+            已接入团队共享服务：不填 Key 也能直接用 AI 生成。填了则优先用你自己的 Key（额度算你自己的）。
+          </span>
+        </div>
+      ) : null}
+
       <div className="system-grid">
         <div className="panel">
           <div className="panel__head">
             <h2 className="panel__title">大模型 API Key</h2>
             <span className={`badge${saved ? " badge--accent" : ""}`}>
-              {saved ? "已填写" : "未填写"}
+              {saved ? "已填写" : shared ? "用团队共享" : "未填写"}
             </span>
           </div>
 

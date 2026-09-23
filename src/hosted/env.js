@@ -20,8 +20,34 @@ function read(key, fallback = "") {
   }
 }
 
+// 共享代理：站点构建时注入，浏览器不用填 Key，改由云函数持团队 Key 转发。
+// 两个都有才算启用（缺 token 的话云函数会拒绝共享调用）。
+const PROXY = String(import.meta.env?.VITE_LLM_PROXY || "").replace(/\/+$/, "");
+const TOKEN = String(import.meta.env?.VITE_LLM_TOKEN || "");
+
+export function hasSharedProxy() {
+  return Boolean(PROXY && TOKEN);
+}
+
+export function llmProxy() {
+  return PROXY;
+}
+
+export function llmToken() {
+  return TOKEN;
+}
+
+// 自己填的 Key（可能为空）
 export function getApiKey() {
   return read(K.apiKey).trim();
+}
+
+// 交给 ai-adapter 看的 Key：没人填 Key 但配了共享代理时给个占位，
+// 否则它会直接判定「未配置」退回模板，根本不会发起请求。
+export function getEffectiveApiKey() {
+  const own = getApiKey();
+  if (own) return own;
+  return hasSharedProxy() ? "shared-via-proxy" : "";
 }
 
 export function setApiKey(value) {
@@ -74,7 +100,7 @@ export function installProcessShim() {
     {},
     {
       get(_target, prop) {
-        if (prop === "OPENAI_API_KEY") return getApiKey();
+        if (prop === "OPENAI_API_KEY") return getEffectiveApiKey();
         if (prop === "OPENAI_BASE_URL") return getBaseUrl();
         if (prop === "OPENAI_MODEL") return getModel();
         if (prop === "NODE_ENV") return "production";
