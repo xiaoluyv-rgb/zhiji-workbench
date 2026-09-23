@@ -49,9 +49,10 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
+  // 托管构建不加载 workbenchApiPlugin：那是给 vite dev 用的后端中间件，
+  // 打包时挂上它只会白白多解析几千个模块（CI 上更容易把内存打爆）。
   plugins: [
     react(),
-    workbenchApiPlugin(),
-    ...(hosted ? [hostedPublicAssetsPlugin(process.cwd())] : []),
+    ...(hosted ? [hostedPublicAssetsPlugin(process.cwd())] : [workbenchApiPlugin()]),
   ],
 });
