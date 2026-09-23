@@ -11,6 +11,7 @@ import { ContentReviewPage } from "./pages/ContentReviewPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { SystemPage } from "./pages/SystemPage";
 import { SocialInsightsPage, SocialTrendDetailPage } from "./pages/SocialInsightsPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { useVaultSync } from "./hooks/useVaultSync";
 
 const localWorkbench = import.meta.env.VITE_WORKBENCH_HOSTED !== "true";
@@ -115,6 +116,7 @@ export function App() {
               }
             />
           ) : null}
+          {localWorkbench ? null : <Route path="/settings" element={<SettingsPage />} />}
           <Route path="/system" element={<SystemPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>

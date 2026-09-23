@@ -1,13 +1,35 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 import { workbenchApiPlugin } from "./server/vite-plugin-workbench.mjs";
+import { hostedPublicAssetsPlugin } from "./scripts/vite-plugin-hosted-public.mjs";
+
+// 网页版（托管）构建：VITE_WORKBENCH_HOSTED=true npm run build
+// 这种构建里没有 Node 后端，为了让 server/ai-adapter.mjs 原样跑在浏览器里，
+// 把它的 Node 依赖全部换成浏览器替身（虚拟文件系统 + path + url + frontmatter）。
+const hosted = process.env.VITE_WORKBENCH_HOSTED === "true";
+const shim = (name) => fileURLToPath(new URL(`./src/hosted/shims/${name}`, import.meta.url));
 
 export default defineConfig({
   cacheDir: process.env.VITE_CACHE_DIR || "node_modules/.vite",
   build: {
     outDir: "dist/client",
     emptyOutDir: false,
+    // 网页版只发布用得到的图片（见 hostedPublicAssetsPlugin），不整包拷贝 public/
+    copyPublicDir: !hosted,
   },
+  resolve: hosted
+    ? {
+        alias: [
+          { find: /^node:fs\/promises$/, replacement: shim("fs-promises.js") },
+          { find: /^node:fs$/, replacement: shim("fs-promises.js") },
+          { find: /^node:path$/, replacement: shim("path.js") },
+          { find: /^path$/, replacement: shim("path.js") },
+          { find: /^node:url$/, replacement: shim("url.js") },
+          { find: /^gray-matter$/, replacement: shim("frontmatter.js") },
+        ],
+      }
+    : {},
   optimizeDeps: {
     include: ["react", "react-dom/client"],
   },
@@ -27,5 +49,9 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [react(), workbenchApiPlugin()],
+  plugins: [
+    react(),
+    workbenchApiPlugin(),
+    ...(hosted ? [hostedPublicAssetsPlugin(process.cwd())] : []),
+  ],
 });

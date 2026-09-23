@@ -1,0 +1,9 @@
+# Cloudflare Pages 配置（网页版部署用）
+name = "zhiji-xhs-workbench"
+compatibility_date = "2026-09-01"
+
+# 构建产物目录，与 vite.config.mjs 的 build.outDir 一致
+pages_build_output_dir = "dist/client"
+
+# Git 集成时在 Cloudflare 面板里填：构建命令 npm run build:hosted
+# 不想接 Git 就用命令行：npx wrangler pages deploy dist/client

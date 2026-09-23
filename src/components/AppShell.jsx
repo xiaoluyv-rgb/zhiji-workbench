@@ -16,6 +16,8 @@ import {
 } from "@tabler/icons-react";
 
 const localWorkbench = import.meta.env.VITE_WORKBENCH_HOSTED !== "true";
+// 网页版每人自带 Key，需要一个入口填；本机版 Key 在 .env 里，不需要这一项。
+const hostedWorkbench = !localWorkbench;
 
 const navigationGroups = [
   {
@@ -47,6 +49,14 @@ const navigationGroups = [
         : []),
     ],
   },
+  ...(hostedWorkbench
+    ? [
+        {
+          title: "设置",
+          items: [{ to: "/settings", label: "API Key", icon: IconSettings }],
+        },
+      ]
+    : []),
 ];
 
 export function AppShell({ children, onOpenSearch, sync }) {

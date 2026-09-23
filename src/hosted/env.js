@@ -1,0 +1,105 @@
+// 托管模式下的「环境变量」：API Key 只存在使用者自己的浏览器 localStorage，
+// 不上传、不落服务端、不进仓库。换浏览器/清缓存就消失，需要重新填一次。
+const K = {
+  apiKey: "workbench.hosted.apiKey",
+  baseUrl: "workbench.hosted.baseUrl",
+  model: "workbench.hosted.model",
+  proxy: "workbench.hosted.useProxy",
+};
+
+const DEFAULTS = {
+  baseUrl: "https://api.deepseek.com/v1",
+  model: "deepseek-chat",
+};
+
+function read(key, fallback = "") {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function getApiKey() {
+  return read(K.apiKey).trim();
+}
+
+export function setApiKey(value) {
+  try {
+    if (value) localStorage.setItem(K.apiKey, value.trim());
+    else localStorage.removeItem(K.apiKey);
+  } catch {
+    /* 隐私模式下 localStorage 不可用时静默降级为「本次会话不保存」 */
+  }
+}
+
+export function getBaseUrl() {
+  return (read(K.baseUrl, DEFAULTS.baseUrl) || DEFAULTS.baseUrl).replace(/\/$/, "");
+}
+
+export function setBaseUrl(value) {
+  try {
+    if (value && value !== DEFAULTS.baseUrl) localStorage.setItem(K.baseUrl, value.replace(/\/$/, ""));
+    else localStorage.removeItem(K.baseUrl);
+  } catch {
+    /* ignore */
+  }
+}
+
+export function getModel() {
+  return read(K.model, DEFAULTS.model) || DEFAULTS.model;
+}
+
+export function setModel(value) {
+  try {
+    if (value && value !== DEFAULTS.model) localStorage.setItem(K.model, value);
+    else localStorage.removeItem(K.model);
+  } catch {
+    /* ignore */
+  }
+}
+
+export function isConfigured() {
+  return Boolean(getApiKey());
+}
+
+export function llmDefaults() {
+  return { baseUrl: DEFAULTS.baseUrl, model: DEFAULTS.model };
+}
+
+// ai-adapter 在运行时读 process.env.OPENAI_* ，这里用代理把它接到 localStorage 上，
+// 这样服务端那份提示词/审核代码一行都不用改就能在浏览器里跑。
+export function installProcessShim() {
+  const envProxy = new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        if (prop === "OPENAI_API_KEY") return getApiKey();
+        if (prop === "OPENAI_BASE_URL") return getBaseUrl();
+        if (prop === "OPENAI_MODEL") return getModel();
+        if (prop === "NODE_ENV") return "production";
+        return undefined;
+      },
+      has() {
+        return true;
+      },
+      ownKeys() {
+        return ["OPENAI_API_KEY", "OPENAI_BASE_URL", "OPENAI_MODEL", "NODE_ENV"];
+      },
+      getOwnPropertyDescriptor() {
+        return { configurable: true, enumerable: true, value: undefined };
+      },
+    },
+  );
+  globalThis.process = {
+    env: envProxy,
+    platform: "browser",
+    version: "browser",
+    argv: [],
+    cwd: () => "/",
+    nextTick: (fn, ...args) => queueMicrotask(() => fn(...args)),
+    on: () => {},
+    off: () => {},
+    emit: () => false,
+  };
+}

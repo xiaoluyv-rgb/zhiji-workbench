@@ -14,10 +14,21 @@ import "@fontsource/jetbrains-mono/500.css";
 import { App } from "./App.jsx";
 import "./styles.css";
 
-createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>,
-);
+// 网页版（托管）需要先装好浏览器侧的运行时：虚拟文件系统 + process 替身 + /api 拦截层。
+// 本地版走真实 Node 后端，这一段会被构建期摇掉。
+const bootPromise =
+  import.meta.env.VITE_WORKBENCH_HOSTED === "true"
+    ? import("./hosted/api-shim.js")
+        .then((mod) => mod.installHostedRuntime())
+        .catch((error) => console.error("[hosted] 运行时安装失败：", error))
+    : Promise.resolve();
+
+bootPromise.finally(() => {
+  createRoot(document.getElementById("root")).render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>,
+  );
+});
