@@ -457,7 +457,7 @@ function contentSystemPrompt({ mode = "A", platform = "小红书", bloggerStyleP
   ].join("\n");
 }
 
-function contentUserPrompt({ mode = "A", model, specs = {}, angle, style, count = 10, tone = "口语化", material, topic, platform = "小红书", longArticle, viral, bloggerStylePrompt = null, userInstruction = null } = {}) {
+function contentUserPrompt({ mode = "A", model, specs = {}, angle, style, count = 10, tone = "口语化", material, topic, platform = "小红书", longArticle, viral, bloggerStylePrompt = null, userInstruction = null, avoidTitles = null } = {}) {
   if (mode === "B") {
     const article = String(longArticle || "").slice(0, 6000);
     return [
@@ -492,6 +492,10 @@ function contentUserPrompt({ mode = "A", model, specs = {}, angle, style, count 
   const userInstructionBlock = userInstruction
     ? `## 用户自定义笔记要求（在保持所选博主人设与语气一致的前提下，务必落实以下要求）\n${String(userInstruction).slice(0, 800)}`
     : "";
+  // 分批生成时，把前几批已经写过的标题带进来，避免前后几批撞题。
+  const avoidBlock = Array.isArray(avoidTitles) && avoidTitles.length
+    ? `## 已经写过、禁止重复的标题（换人设 / 换场景 / 换卖点重写）\n${avoidTitles.slice(-30).map((t) => `- ${String(t).slice(0, 40)}`).join("\n")}\n`
+    : "";
   return [
     "## 任务：批量小红书笔记",
     `车型：${model || "（未指定）"}`,
@@ -507,6 +511,7 @@ function contentUserPrompt({ mode = "A", model, specs = {}, angle, style, count 
     topicBlock,
     viralBlock,
     userInstructionBlock,
+    avoidBlock,
     material
       ? `请生成 ${count} 条相互独立的小红书笔记草稿，且每一条都必须明显呼应上述「参考素材」的核心内容（可转述 / 延展 / 结合自身体验，但不可与素材无关，也不可偏离素材主线）。`
       : `请生成 ${count} 条相互独立、互不相同的小红书笔记草稿（不同人设、不同场景、不同卖点，不要复用同一句话）。`,
@@ -607,6 +612,9 @@ function normalizeLlmNote(raw, index, model) {
   };
 }
 
+// 单批交给 LLM 的条数上限。调大就会重新踩到代理云函数的超时线（见下方分批注释）。
+const LLM_BATCH = 5;
+
 export async function generateContent(vaultRoot, opts = {}) {
   const {
     mode = "A",     model, angle, count, tone = "口语化",
@@ -661,16 +669,30 @@ export async function generateContent(vaultRoot, opts = {}) {
 
   if (hasKey) {
     try {
-      const items = await callContentLLM(
-        contentSystemPrompt({ mode: isModeB ? "B" : "A", platform, bloggerStylePrompt }),
+      // ⚠️ 一次让 LLM 写太多条会拖到 20s 以上；30 条会直接撞上代理云函数的超时上限
+      // （60s）→ 504 → 前端静默退回预置模板。所以按每批 LLM_BATCH 条拆开逐批调用，
+      // 每批都远低于超时线，前端总等待时间可以超过 60s 也不会失败。
+      const system = contentSystemPrompt({ mode: isModeB ? "B" : "A", platform, bloggerStylePrompt });
+      const userPrompt = (batchCount, avoidTitles) =>
         contentUserPrompt({
           mode: isModeB ? "B" : "A",
           model: target?.name, specs, angle, style,
-          count: total, tone, material, topic, platform, longArticle, viral,
+          count: batchCount, tone, material, topic, platform, longArticle, viral,
           bloggerStylePrompt,
           userInstruction,
-        }),
-      );
+          avoidTitles,
+        });
+      const items = [];
+      const writtenTitles = [];
+      for (let done = 0; done < total; done += LLM_BATCH) {
+        const batchCount = Math.min(LLM_BATCH, total - done);
+        const batch = await callContentLLM(system, userPrompt(batchCount, writtenTitles));
+        items.push(...batch);
+        for (const raw of batch) {
+          const t = String(raw?.title || raw?.主标题 || "").trim();
+          if (t) writtenTitles.push(t);
+        }
+      }
       notes = items.slice(0, total).map((raw, i) => normalizeLlmNote(raw, i, target?.name || model || "智己"));
     } catch (err) {
       console.error("[content-generate] LLM 生成失败，回退模板：", err?.message || err);
