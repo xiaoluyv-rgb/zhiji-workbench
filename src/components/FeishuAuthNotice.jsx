@@ -4,9 +4,14 @@ import { loadFeishuStatus } from "../lib/api";
 
 const POLL_INTERVAL_MS = 0; // 手动刷新即可，不必轮询
 
+// 网页版的数据来自云端知识库 + 随站点发布的静态图库，压根不读飞书。
+// 这条横幅在网页版上只会误导（它会让人以为要去命令行跑 lark-cli），直接不渲染。
+const HOSTED_WORKBENCH = import.meta.env.VITE_WORKBENCH_HOSTED === "true";
+
 // Workbench 飞书登录引导：当本机 lark-cli user 身份未就绪时，
 // 在「车型资料库 / 创作知识库」等依赖飞书的页面顶部渲染这条横幅，
 // 给出明确的「终端里怎么登录」+ 重新检测按钮。
+// ⚠️ 只对本地版有意义 —— 网页版（HOSTED_WORKBENCH）直接返回 null。
 export function FeishuAuthNotice({ variant = "banner", onRefresh }) {
   const [auth, setAuth] = useState({ status: "loading" });
   const [reloadKey, setReloadKey] = useState(0);
@@ -32,6 +37,8 @@ export function FeishuAuthNotice({ variant = "banner", onRefresh }) {
     setReloadKey((k) => k + 1);
     onRefresh?.();
   }, [onRefresh]);
+
+  if (HOSTED_WORKBENCH) return null;
 
   if (auth.status === "loading") {
     return (

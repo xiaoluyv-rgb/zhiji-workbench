@@ -54,7 +54,7 @@ export function ContentReviewPage() {
       <PageHeader
         eyebrow="CONTENT REVIEW · COMPLIANCE"
         title="内容审核"
-        description="自动判断笔记讲的是哪款车，再按该车型参数库与飞书同步的官方权益，对产品参数与权益信息做零容差校对；同时审核标题并扫广告法与平台合规红线。"
+        description="自动判断笔记讲的是哪款车，再按该车型参数库与知识库中的官方权益，对产品参数与权益信息做零容差校对；同时审核标题并扫广告法与平台合规红线。"
         aside={
           result ? (
             <span className={`badge ${result.passed ? "badge--accent" : ""}`}>
@@ -271,7 +271,7 @@ export function ContentReviewPage() {
 
               <p className="provenance">
                 审核依据：wiki/policy 中的广告法红线与小红书平台规范、指定车型的官方参数，以及
-                wiki/benefits 中的官方权益（飞书同步）。产品参数与权益为零容差校对，必须与官方口径完全一致。
+                wiki/benefits 中的官方权益。产品参数与权益为零容差校对，必须与官方口径完全一致。
               </p>
             </>
           ) : null}

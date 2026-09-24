@@ -492,7 +492,7 @@ const LLM_HOST_RE = /^https:\/\/(api\.deepseek\.com|api\.openai\.com|open\.bigmo
 //  - 没填 Key          → 走团队共享 Key（云函数校验 x-access-token）
 // via 必须显式传入：以前用模块级常量，未配置时会 fetch("") 打到当前页面，
 // 拿到 200 的 HTML，AI 解析失败 → 静默退回预设模板。这是「一直是预设内容」的根因之一。
-function callLlmProxy(url, init, ownKey, via) {
+function callLlmProxy(url, init, ownKey, via, signalOverride) {
   const target = via || LLM_PROXY;
   if (!target) throw new Error("LLM 代理地址未配置");
   const headers = new Headers(init?.headers || {});
@@ -504,8 +504,64 @@ function callLlmProxy(url, init, ownKey, via) {
     method: init?.method || "POST",
     headers,
     body: init?.body,
-    signal: init?.signal,
+    signal: signalOverride ?? init?.signal,
   });
+}
+
+// 代理超时上限。云函数抽风时（冷启动 InitContainerTimeout）会一直挂着不返回，
+// 没有这个上限用户就得干等 60s 才看到退回模板。宁可早点放弃、改走直连。
+const PROXY_TIMEOUT_MS = 25_000;
+
+// 组合「上游 signal + 自己的超时」：任意一个触发就中止。
+function raceAbort(upstream, ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  const onUpstream = () => controller.abort();
+  if (upstream) {
+    if (upstream.aborted) controller.abort();
+    else upstream.addEventListener("abort", onUpstream, { once: true });
+  }
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      clearTimeout(timer);
+      if (upstream) upstream.removeEventListener("abort", onUpstream);
+    },
+  };
+}
+
+// 代理「抽风过」的记忆。云函数冷启动失败往往持续十几分钟，
+// 不记下来的话每一次请求都要先干等 25s 超时才肯走直连 —— 同事会以为卡死了。
+// 存 localStorage 是为了让刷新页面也不用重新等一遍。
+const PROXY_DOWN_KEY = "workbench.hosted.proxyDownUntil";
+const PROXY_COOLDOWN_MS = 5 * 60 * 1000;
+let proxyDownUntil = 0;
+try {
+  proxyDownUntil = Number(localStorage.getItem(PROXY_DOWN_KEY) || 0) || 0;
+} catch {
+  /* 隐私模式 */
+}
+const markProxyDown = () => {
+  proxyDownUntil = Date.now() + PROXY_COOLDOWN_MS;
+  try {
+    localStorage.setItem(PROXY_DOWN_KEY, String(proxyDownUntil));
+  } catch {
+    /* 隐私模式 */
+  }
+};
+const proxyProbablyDown = () => Date.now() < proxyDownUntil;
+
+// 带超时的代理调用：超时 / 网络异常都会抛，交给上层改走直连。
+async function callLlmProxyGuarded(url, init, ownKey, via) {
+  const raced = raceAbort(init?.signal, PROXY_TIMEOUT_MS);
+  try {
+    return await callLlmProxy(url, init, ownKey, via, raced.signal);
+  } catch (e) {
+    markProxyDown();
+    throw e;
+  } finally {
+    raced.cleanup();
+  }
 }
 
 async function badProxy(resp) {
@@ -524,19 +580,58 @@ async function badProxy(resp) {
 async function fetchLlmWithFallback(url, init) {
   const ownKey = getApiKey();
 
+  // 顺序：
+  //   1. 云端代理（自带 Key 透传；401/402/403/429 换团队共享 Key 再试）
+  //   2. 代理挂了（超时 / 网络异常 / 云函数冷启动失败）→ 只要有 Key 就直连 DeepSeek
+  //   3. 没配代理 → 先直连，网络异常再退回同域 /api/llm-proxy
+  //
+  // 第 2 步是抗故障的关键：实测 DeepSeek 回显 Origin 允许跨域，
+  // 所以云函数整体不可用时，填了 Key 的人照样能出 AI 内容，而不是退回模板。
   if (LLM_PROXY) {
     if (ownKey) {
-      const withOwn = await callLlmProxy(url, init, ownKey, LLM_PROXY);
-      if (withOwn.ok) return withOwn;
-      // 自己的 Key 不行（401/402/403/429）→ 换团队共享 Key 再试一次
-      if (withOwn.status === 401 || withOwn.status === 402 || withOwn.status === 403 || withOwn.status === 429) {
-        const shared = await callLlmProxy(url, init, null, LLM_PROXY);
-        if (shared.ok) return shared;
-        throw await badProxy(shared);
+      // 代理刚刚挂过 → 别再让用户干等超时，先直连，直连不通再回头试代理
+      if (proxyProbablyDown()) {
+        try {
+          const direct = await originalFetch(url, init);
+          if (direct.ok) return direct;
+        } catch {
+          /* 直连也被拦，继续走代理 */
+        }
       }
-      throw await badProxy(withOwn);
+
+      let ownResp = null;
+      try {
+        ownResp = await callLlmProxyGuarded(url, init, ownKey, LLM_PROXY);
+      } catch {
+        ownResp = null; // 代理不可用，落到直连
+      }
+      if (ownResp?.ok) return ownResp;
+
+      const ownStatus = ownResp?.status || 0;
+      if (ownStatus === 401 || ownStatus === 402 || ownStatus === 403 || ownStatus === 429) {
+        let shared = null;
+        try {
+          shared = await callLlmProxyGuarded(url, init, null, LLM_PROXY);
+        } catch {
+          shared = null;
+        }
+        if (shared?.ok) return shared;
+      }
+
+      // 代理这条路走不通了 —— 用自带的 Key 直连
+      try {
+        const direct = await originalFetch(url, init);
+        if (direct.ok) return direct;
+      } catch {
+        /* 直连也被拦，下面按代理的错误抛 */
+      }
+
+      if (ownResp) throw await badProxy(ownResp);
+      throw new Error("LLM 代理不可用，且直连失败（检查网络或 Key）");
     }
-    const shared = await callLlmProxy(url, init, null, LLM_PROXY);
+
+    // 没填 Key：只能靠共享 Key，直连无意义
+    const shared = await callLlmProxyGuarded(url, init, null, LLM_PROXY);
     if (!shared.ok) throw await badProxy(shared);
     return shared;
   }

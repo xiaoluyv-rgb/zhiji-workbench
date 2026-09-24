@@ -39,6 +39,11 @@ function modelLabel(brand, modelBase) {
 const FEISHU_SHARE_URL =
   "https://ocntszr0j74l.feishu.cn/wiki/space/7664887113942338523";
 
+// 网页版的车型资料来自云端知识库 + 随站点发布的静态图库，不读飞书。
+// 所以「刷新飞书 / 从飞书同步图片 / 去飞书管理」这些入口在网页版一律不显示 ——
+// 点了必然失败，还让人以为这站点依赖飞书授权。
+const HOSTED_WORKBENCH = import.meta.env.VITE_WORKBENCH_HOSTED === "true";
+
 // 把飞书知识库自动卖点文案（可能带 # 标题 / 换行）整理成一行可读副标题
 function cleanIntro(text) {
   if (!text) return "";
@@ -561,35 +566,43 @@ export function CarModelHub() {
           <h2>车型资料库</h2>
         </div>
         <div className="car-model-hub__actions">
-          <button
-            className="materials-section__link"
-            onClick={refreshFeishu}
-            type="button"
-          >
-            <IconRefresh size={15} /> 刷新飞书
-          </button>
-          <button
-            className="materials-section__link"
-            onClick={handleSync}
-            disabled={syncing}
-            type="button"
-          >
-            <IconRefresh size={15} /> {syncing ? "同步中…" : "从飞书同步图片"}
-          </button>
-          <a
-            className="materials-section__link"
-            href={feishuShareUrl}
-            target="_blank"
-            rel="noreferrer"
-            title="在飞书知识库中管理车型主图库"
-          >
-            <IconExternalLink size={15} /> 在飞书中打开
-          </a>
+          {/* 网页版不读飞书，这三个入口点了必然失败 —— 只在本地版显示 */}
+          {HOSTED_WORKBENCH ? null : (
+            <>
+              <button
+                className="materials-section__link"
+                onClick={refreshFeishu}
+                type="button"
+              >
+                <IconRefresh size={15} /> 刷新飞书
+              </button>
+              <button
+                className="materials-section__link"
+                onClick={handleSync}
+                disabled={syncing}
+                type="button"
+              >
+                <IconRefresh size={15} /> {syncing ? "同步中…" : "从飞书同步图片"}
+              </button>
+              <a
+                className="materials-section__link"
+                href={feishuShareUrl}
+                target="_blank"
+                rel="noreferrer"
+                title="在飞书知识库中管理车型主图库"
+              >
+                <IconExternalLink size={15} /> 在飞书中打开
+              </a>
+            </>
+          )}
         </div>
       </div>
 
       <p className="car-model-hub__intro">
-        每个车型一张卡片：<strong>左栏</strong>是该车型的参数文档与飞书资料（点击弹窗阅读，飞书改动约 5 秒自动镜像），<strong>右栏</strong>是官方参考图，AI 出图时对照防错。
+        每个车型一张卡片：<strong>左栏</strong>是该车型的参数文档与资料（点击弹窗阅读），<strong>右栏</strong>是官方参考图，AI 出图时对照防错。
+        {HOSTED_WORKBENCH
+          ? "车型参数在「知识」页由管理员维护，改完刷新即生效。"
+          : ""}
       </p>
 
       <FeishuAuthNotice onRefresh={() => { loadRef(); loadFeishu(true); loadKb(true); }} />
@@ -598,12 +611,14 @@ export function CarModelHub() {
         <div className="car-model-hub__ima">
           <span className="car-model-hub__ima-dot" aria-hidden="true" />
           <span>
-            飞书车型图库已同步 · 共 <strong>{feishu.total}</strong> 张
-            {feishuSyncedAt ? ` · 同步于 ${feishuSyncedAt}` : ""}
+            {HOSTED_WORKBENCH ? "车型图库" : "飞书车型图库已同步"} · 共 <strong>{feishu.total}</strong> 张
+            {feishuSyncedAt && !HOSTED_WORKBENCH ? ` · 同步于 ${feishuSyncedAt}` : ""}
           </span>
-          <a href={feishuShareUrl} target="_blank" rel="noreferrer" className="car-model-hub__ima-link">
-            去飞书管理 <IconExternalLink size={13} />
-          </a>
+          {HOSTED_WORKBENCH ? null : (
+            <a href={feishuShareUrl} target="_blank" rel="noreferrer" className="car-model-hub__ima-link">
+              去飞书管理 <IconExternalLink size={13} />
+            </a>
+          )}
         </div>
       ) : null}
 
@@ -772,9 +787,11 @@ function CarModelCard({
       <header className="car-model-card__head">
         <span className="feishu-badge">{modelLabel(brand, modelBase)}</span>
         <span className="mono car-model-card__meta">
-          {hasFeishu ? `${docs.length} 资料` : "资料未连接"} · {kbParamDocs.length} 参数 · {images.length} 参考图
+          {/* 网页版没有飞书 sources，别显示「资料未连接」——资料其实在云端知识库里 */}
+          {HOSTED_WORKBENCH ? "" : hasFeishu ? `${docs.length} 资料 · ` : "资料未连接 · "}
+          {kbParamDocs.length} 参数 · {images.length} 参考图
         </span>
-        {entry.feishuNodeUrl ? (
+        {entry.feishuNodeUrl && !HOSTED_WORKBENCH ? (
           <a
             className="car-model-card__feishu-link"
             href={entry.feishuNodeUrl}
@@ -908,7 +925,8 @@ function CarReferenceGrid({ images }) {
             {img.intro ? (
               <span className="car-ref-thumb__caption">{cleanIntro(img.intro)}</span>
             ) : null}
-            {img.feishu ? (
+            {/* 网页版的图随站点发布，不标「飞书」——来源不是重点，容易让人以为要授权 */}
+            {img.feishu && !HOSTED_WORKBENCH ? (
               <span className="car-ref-thumb__tag" title="来自飞书知识库">飞书</span>
             ) : null}
           </button>
@@ -916,7 +934,7 @@ function CarReferenceGrid({ images }) {
       </div>
 
       <p className="car-ref-panel__hint">
-        参考辅助：运营用 AI 出图时，对照本库确认车型外观，避免张冠李戴。每张图下方为飞书知识库<strong>自动识别的卖点文案</strong>，新增图片放进对应车型目录即自动归类。
+        参考辅助：运营用 AI 出图时，对照本库确认车型外观，避免张冠李戴。每张图下方为<strong>自动识别的卖点文案</strong>{HOSTED_WORKBENCH ? "，换图请联系管理员更新后重新发布" : "，新增图片放进对应车型目录即自动归类"}。
       </p>
 
       {preview ? (

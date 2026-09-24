@@ -12,6 +12,10 @@ import { loadCreationMaterials, syncCreationMaterials } from "../lib/api";
 const CREATION_FEISHU_URL =
   "https://ocntszr0j74l.feishu.cn/wiki/RbrWwYxemiIXs2k7DCZcbF4Lnah";
 
+// 网页版的创作素材随站点发布，不读飞书 —— 「刷新飞书 / 从飞书同步图片 / 去飞书管理」
+// 这些入口点了必然失败，一律不显示。
+const HOSTED_WORKBENCH = import.meta.env.VITE_WORKBENCH_HOSTED === "true";
+
 function formatSyncTime(iso) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -85,26 +89,30 @@ export function CreationGallery() {
           <h2>创作知识库</h2>
         </div>
         <div className="creation-gallery__actions">
-          <button className="materials-section__link" onClick={load} type="button">
-            <IconRefresh size={15} /> 刷新飞书
-          </button>
-          <button
-            className="materials-section__link"
-            onClick={handleSync}
-            disabled={syncing}
-            type="button"
-          >
-            <IconRefresh size={15} /> {syncing ? "同步中…" : "从飞书同步图片"}
-          </button>
-          <a
-            className="materials-section__link"
-            href={CREATION_FEISHU_URL}
-            target="_blank"
-            rel="noreferrer"
-            title="在飞书知识库中管理创作知识库"
-          >
-            <IconExternalLink size={15} /> 在飞书中打开
-          </a>
+          {HOSTED_WORKBENCH ? null : (
+            <>
+              <button className="materials-section__link" onClick={load} type="button">
+                <IconRefresh size={15} /> 刷新飞书
+              </button>
+              <button
+                className="materials-section__link"
+                onClick={handleSync}
+                disabled={syncing}
+                type="button"
+              >
+                <IconRefresh size={15} /> {syncing ? "同步中…" : "从飞书同步图片"}
+              </button>
+              <a
+                className="materials-section__link"
+                href={CREATION_FEISHU_URL}
+                target="_blank"
+                rel="noreferrer"
+                title="在飞书知识库中管理创作知识库"
+              >
+                <IconExternalLink size={15} /> 在飞书中打开
+              </a>
+            </>
+          )}
         </div>
       </div>
 
@@ -112,12 +120,14 @@ export function CreationGallery() {
         <div className="car-model-hub__ima">
           <span className="car-model-hub__ima-dot" aria-hidden="true" />
           <span>
-            飞书创作库已同步 · 共 <strong>{feishu.total}</strong> 张
-            {feishuSyncedAt ? ` · 同步于 ${feishuSyncedAt}` : ""}
+            {HOSTED_WORKBENCH ? "创作素材库" : "飞书创作库已同步"} · 共 <strong>{feishu.total}</strong> 张
+            {feishuSyncedAt && !HOSTED_WORKBENCH ? ` · 同步于 ${feishuSyncedAt}` : ""}
           </span>
-          <a href={CREATION_FEISHU_URL} target="_blank" rel="noreferrer" className="car-model-hub__ima-link">
-            去飞书管理 <IconExternalLink size={13} />
-          </a>
+          {HOSTED_WORKBENCH ? null : (
+            <a href={CREATION_FEISHU_URL} target="_blank" rel="noreferrer" className="car-model-hub__ima-link">
+              去飞书管理 <IconExternalLink size={13} />
+            </a>
+          )}
         </div>
       ) : null}
 
@@ -159,7 +169,11 @@ export function CreationGallery() {
         <div className="kb-content__empty">
           <IconPhoto size={28} aria-hidden="true" />
           <strong>创作知识库还是空的</strong>
-          <span>在飞书「创作知识库」节点下放入爆文案例图或文档，刷新工作台即自动同步到这里。</span>
+          <span>
+            {HOSTED_WORKBENCH
+              ? "网页版的创作素材随站点一起发布，需要补充请联系管理员更新后重新发布。"
+              : "在飞书「创作知识库」节点下放入爆文案例图或文档，刷新工作台即自动同步到这里。"}
+          </span>
         </div>
       ) : (
         <div className="creation-sections">

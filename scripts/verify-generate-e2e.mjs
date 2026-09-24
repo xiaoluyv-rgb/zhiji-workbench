@@ -206,6 +206,23 @@ async function main() {
 
   console.log(`[gen] 墙钟耗时 ${(wall / 1000).toFixed(1)}s`);
   console.log(JSON.stringify(result, null, 2));
+
+  // REPEAT=2：同一页面再来一次，用来验证「代理挂过之后不再干等超时、直接走直连」
+  if (Number(process.env.REPEAT || 1) > 1) {
+    const t1 = Date.now();
+    const again = await evaluate(`(async () => {
+      const resp = await fetch('/api/content/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: ${JSON.stringify(JSON.stringify(payload))},
+      });
+      const data = await resp.json().catch(() => ({}));
+      return { httpStatus: resp.status, demoMode: data.demoMode, elapsedMs: data.elapsedMs };
+    })()`);
+    console.log(
+      `[gen] 第二次（同页面）墙钟 ${((Date.now() - t1) / 1000).toFixed(1)}s → ${JSON.stringify(again)}`,
+    );
+  }
   if (network.length) console.log(`[gen] 网络: ${[...new Set(network)].join("\n            ")}`);
   if (consoleErrors.length) console.log(`[gen] console.error: ${consoleErrors.slice(0, 6).join("\n                   ")}`);
 
