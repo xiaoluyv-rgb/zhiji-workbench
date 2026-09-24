@@ -13,6 +13,8 @@
     "deploy": "wrangler deploy",
     "deploy:cloudbase": "npm run build:hosted && node scripts/deploy-cloudbase.mjs",
     "preview": "vite preview",
+    "verify:car-sync": "node scripts/verify-car-sync-e2e.mjs",
+    "verify:generate": "node scripts/verify-generate-e2e.mjs",
     "postinstall": "node scripts/ensure-fallback.mjs",
     "test:authenticity": "node --test tests/data-authenticity.test.mjs",
     "test:ui-information-gate": "node --test tests/ui-information-gate.test.mjs",
