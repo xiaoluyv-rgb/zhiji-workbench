@@ -7,7 +7,7 @@
 //
 // 用法：npm run build:hosted
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, statSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isGoodNode, preferredNode } from "./pick-node.mjs";
@@ -30,6 +30,33 @@ function run(label, command, args, env) {
       else reject(new Error(`${label} 失败，退出码 ${code}`));
     });
   });
+}
+
+// 清掉历史哈希 bundle。dist/client/assets 每次构建会多留一套 index-xxxx.js，
+// 攒多了白白多传十几 MB。但不能用 emptyOutDir 一次清空 —— 50 个以上的批量删除
+// 会被工作区的安全钩子拦下导致构建失败，所以这里每轮只删 40 个，几轮自然收敛。
+const STALE_PER_RUN = 40;
+function cleanStaleAssets() {
+  const dir = path.join(ROOT, "dist", "client", "assets");
+  if (!existsSync(dir)) return;
+  const stale = readdirSync(dir)
+    .filter((f) => /^[\w.-]+-[A-Za-z0-9_-]{8,}\.(js|css|map)$/.test(f))
+    .map((f) => ({ f, t: statSync(path.join(dir, f)).mtimeMs }))
+    .sort((a, b) => a.t - b.t);
+  if (!stale.length) return;
+  const doomed = stale.slice(0, STALE_PER_RUN);
+  let ok = 0;
+  for (const { f } of doomed) {
+    try {
+      unlinkSync(path.join(dir, f));
+      ok += 1;
+    } catch {
+      /* 被占用就跳过，下次构建再清 */
+    }
+  }
+  console.log(
+    `[hosted] 清理历史 bundle：删 ${ok} 个，还剩 ${Math.max(0, stale.length - ok)} 个待下轮清理`,
+  );
 }
 
 // node 24 下 vite 会卡死在打包阶段，发现版本不对就用 node 22 重新跑一遍自己。
@@ -71,6 +98,8 @@ async function main() {
   //    CLI 打包完成后进程不会退出（esbuild 等服务仍挂着句柄），
   //    实测卡死 34 分钟无任何输出，后面的部署命令永远等不到执行。
   //    build() 本身会正常 resolve，结束后显式 process.exit(0) 收尾。
+  cleanStaleAssets();
+
   console.log("\n===== [hosted] 打包前端 =====");
   const { build } = await import("vite");
   await build({

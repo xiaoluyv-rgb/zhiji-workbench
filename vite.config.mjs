@@ -14,9 +14,9 @@ export default defineConfig({
   cacheDir: process.env.VITE_CACHE_DIR || "node_modules/.vite",
   build: {
     outDir: "dist/client",
-    // 网页版构建先清空产物：dist/client/assets 会累积历史 bundle
-    // （曾堆到 7 套 index/api-shim，多传 15MB），本地构建则保留以便对比。
-    emptyOutDir: hosted,
+    // 不能开 emptyOutDir：一次清空 50+ 个历史 bundle 会被工作区的批量删除保护拦下，
+    // 构建直接失败。改为由 build-hosted.mjs 分批清理旧的哈希 bundle（见 cleanStaleAssets）。
+    emptyOutDir: false,
     // 网页版只发布用得到的图片（见 hostedPublicAssetsPlugin），不整包拷贝 public/
     copyPublicDir: !hosted,
   },

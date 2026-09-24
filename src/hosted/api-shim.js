@@ -356,13 +356,17 @@ const LLM_HOST_RE = /^https:\/\/(api\.deepseek\.com|api\.openai\.com|open\.bigmo
 // 托管站点的 LLM 代理（CloudBase 云函数）。配了 VITE_LLM_PROXY 才启用。
 //  - 用户自己填了 Key  → 透传，云函数不存 Key
 //  - 没填 Key          → 走团队共享 Key（云函数校验 x-access-token）
-function callLlmProxy(url, init, ownKey) {
+// via 必须显式传入：以前用模块级常量，未配置时会 fetch("") 打到当前页面，
+// 拿到 200 的 HTML，AI 解析失败 → 静默退回预设模板。这是「一直是预设内容」的根因之一。
+function callLlmProxy(url, init, ownKey, via) {
+  const target = via || LLM_PROXY;
+  if (!target) throw new Error("LLM 代理地址未配置");
   const headers = new Headers(init?.headers || {});
   headers.set("x-llm-target", String(url));
   headers.delete("Authorization");
   if (ownKey) headers.set("x-api-key", ownKey);
   if (LLM_TOKEN) headers.set("x-access-token", LLM_TOKEN);
-  return originalFetch(LLM_PROXY, {
+  return originalFetch(target, {
     method: init?.method || "POST",
     headers,
     body: init?.body,
@@ -378,24 +382,38 @@ async function badProxy(resp) {
   );
 }
 
+// 浏览器直连 api.deepseek.com 有三个坑：CORS、公司网络拦截、Key 本身失效。
+// 以前只有「网络异常」才走代理，HTTP 401/402/403（Key 失效、余额不足）会直接把
+// ai-adapter 打回模板 —— 用户看到的就是预设内容。现在统一处理：
+//   1. 配了云端代理 → 一律走代理（自带 Key 优先透传，失败自动换团队共享 Key）
+//   2. 没配代理     → 先直连，网络异常再退回同域 /api/llm-proxy
 async function fetchLlmWithFallback(url, init) {
   const ownKey = getApiKey();
 
-  // 没填自己的 Key：只能走共享代理，直连必然失败
-  if (LLM_PROXY && !ownKey) {
-    const resp = await callLlmProxy(url, init, null);
-    if (!resp.ok) throw await badProxy(resp);
-    return resp;
+  if (LLM_PROXY) {
+    if (ownKey) {
+      const withOwn = await callLlmProxy(url, init, ownKey, LLM_PROXY);
+      if (withOwn.ok) return withOwn;
+      // 自己的 Key 不行（401/402/403/429）→ 换团队共享 Key 再试一次
+      if (withOwn.status === 401 || withOwn.status === 402 || withOwn.status === 403 || withOwn.status === 429) {
+        const shared = await callLlmProxy(url, init, null, LLM_PROXY);
+        if (shared.ok) return shared;
+        throw await badProxy(shared);
+      }
+      throw await badProxy(withOwn);
+    }
+    const shared = await callLlmProxy(url, init, null, LLM_PROXY);
+    if (!shared.ok) throw await badProxy(shared);
+    return shared;
   }
 
   try {
     return await originalFetch(url, init);
   } catch (e) {
     const target = String(url);
-    // 配了云上代理就走它，否则退回同域 /api/llm-proxy（Cloudflare Workers 那条路）
-    const via = LLM_PROXY || (LLM_HOST_RE.test(target) ? "/api/llm-proxy" : null);
+    const via = LLM_HOST_RE.test(target) ? "/api/llm-proxy" : null;
     if (!via) throw e;
-    const resp = await callLlmProxy(url, init, ownKey);
+    const resp = await callLlmProxy(url, init, ownKey, via);
     if (!resp.ok && resp.status >= 400) throw await badProxy(resp);
     return resp;
   }

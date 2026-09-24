@@ -85,8 +85,10 @@ export function setModel(value) {
   }
 }
 
+// 「能不能生成」= 自己填了 Key，或者站点配了共享代理。
+// 以前只看自己的 Key，导致配了共享代理却不填 Key 的人直接被 401 挡在门外。
 export function isConfigured() {
-  return Boolean(getApiKey());
+  return Boolean(getApiKey()) || hasSharedProxy();
 }
 
 export function llmDefaults() {

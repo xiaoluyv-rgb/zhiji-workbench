@@ -7,6 +7,11 @@ import { IconBook2, IconExternalLink, IconFileText, IconFolder } from "@tabler/i
 import { PageHeader } from "../components/PageHeader";
 import { CreationGallery } from "../components/CreationGallery";
 import { FeishuAuthNotice } from "../components/FeishuAuthNotice";
+import { CloudKnowledge } from "../components/CloudKnowledge";
+import { hasCloudKb } from "../lib/kb-cloud.js";
+
+// 网页版的知识走云端（管理员改完刷新即见）；本地版仍走飞书 / Obsidian。
+const CLOUD = hasCloudKb();
 
 export function KnowledgePage({ initialPart = "car" }) {
   const [activePart, setActivePart] = useState(initialPart);
@@ -118,12 +123,19 @@ export function KnowledgePage({ initialPart = "car" }) {
         eyebrow="KNOWLEDGE BASE"
         title={activePart === "car" ? "车型参数" : "创作知识库"}
         description={
-          activePart === "car"
-            ? "车型参数库链接飞书 Wiki，实时镜像、约 5 秒自动刷新；左侧选择知识库与文档，右侧即时预览官方车型参数。"
-            : "创作知识库链接飞书「创作知识库」节点，按车型归类的爆文案例与创作素材，刷新即同步。"
+          CLOUD
+            ? "知识存在云端：管理员在网页上新增 / 编辑 / 下架，所有人刷新页面就能看到最新版，不需要重新部署。"
+            : activePart === "car"
+              ? "车型参数库链接飞书 Wiki，实时镜像、约 5 秒自动刷新；左侧选择知识库与文档，右侧即时预览官方车型参数。"
+              : "创作知识库链接飞书「创作知识库」节点，按车型归类的爆文案例与创作素材，刷新即同步。"
         }
         aside={
-          activePart === "car" ? (
+          CLOUD ? (
+            <div className="kb-live mono">
+              <span className="kb-live__dot kb-live__dot--on" />
+              云端实时
+            </div>
+          ) : activePart === "car" ? (
             <div className="kb-live mono">
               <span className={`kb-live__dot${live ? " kb-live__dot--on" : ""}`} />
               {live ? "实时连接" : "连接中…"}
@@ -135,11 +147,13 @@ export function KnowledgePage({ initialPart = "car" }) {
         }
       />
 
-      {activePart === "car" ? (
+      {CLOUD ? <CloudKnowledge part={activePart} /> : null}
+
+      {!CLOUD && activePart === "car" ? (
         <FeishuAuthNotice onRefresh={loadTree} />
       ) : null}
 
-      {activePart === "car" ? (
+      {!CLOUD && activePart === "car" ? (
         <div className="kb-layout">
         <aside className="kb-tree" aria-label="知识库目录">
           <div className="kb-tree__head">
@@ -233,9 +247,9 @@ export function KnowledgePage({ initialPart = "car" }) {
           )}
         </section>
       </div>
-      ) : (
+      ) : !CLOUD ? (
         <CreationGallery />
-      )}
+      ) : null}
     </div>
   );
 }
