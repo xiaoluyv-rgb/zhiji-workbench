@@ -63,9 +63,16 @@ npm run seed:kb       # 把本地 wiki/ 灌进云端（只做一次初始化）
 
 ## 二、创作板块
 
-以前一直是「预设内容」，根因有四个，都已修掉：
+以前一直是「预设内容」，根因有五个，都已修掉：
 
-1. **★ 代理云函数超时只有 3 秒（这才是真正的致命项）** —— CloudBase 云函数默认
+0. **★★ Vite 把 `process.env` 折叠成了空对象（最致命，也最难发现）** ——
+   打浏览器包时 `process.env` 被静态替换并常量折叠，产物里是 `var q={}`，
+   所有读取变成 `q.OPENAI_API_KEY`。于是 `installProcessShim()` 挂的
+   `globalThis.process` **完全不起作用**，ai-adapter 永远拿不到 Key，
+   `demoMode` 恒为 true（表现为 `elapsedMs` 只有 2 毫秒 —— 压根没发请求）。
+   修法：ai-adapter 改用 `envValue(key)` 运行时读 `globalThis.__WB_PROCESS_ENV__`。
+   ⚠️ 本文件里**禁止再直接写 `process.env.XXX`**，否则网页版会再次静默退回模板。
+1. **★ 代理云函数超时只有 3 秒** —— CloudBase 云函数默认
    `timeout` 就是 3s，而 DeepSeek 写 2 条笔记实测要 **7 秒**、10 条要 **20 秒**。
    于是代理稳定返回 `504 FUNCTIONS_TIME_LIMIT_EXCEEDED` → ai-adapter 判定失败 →
    **静默退回预置模板**。表现就是「填了 Key，出来的还是老内容」。
@@ -95,7 +102,26 @@ npm run seed:kb       # 把本地 wiki/ 灌进云端（只做一次初始化）
 
 ---
 
-## 三、构建相关的两个坑（别改回去）
+## 三、验证方式（重要：Node 跑通 ≠ 浏览器跑通）
+
+```bash
+python -m http.server 4173 --directory dist/client   # 起同一份产物
+node scripts/verify-generate-e2e.mjs                  # 真实浏览器跑一遍生成
+OWN_KEY=sk-假key node scripts/verify-generate-e2e.mjs # 验证无效 Key 的回退
+PORT=9333 node scripts/verify-hosted-build.mjs http://127.0.0.1:4173  # 全站路由回归
+```
+
+上面第 0、1 两个根因**在 Node 里都复现不出来**，只有真实浏览器能看到
+`demoMode` / `llmFallback` / `llmError` 的真值和网络请求状态码。
+⚠️ 沙箱里的 Edge 访问线上域名一律 404（curl 正常），所以线上只能 curl 验证资源
+可达性，功能验证要用本地起的那份产物。
+
+## 四、构建相关的三个坑（别改回去）
+
+- **`404.html` 是静态托管的 SPA 兜底**：`tcb hosting` 没有 SPA 开关，靠部署一份
+  `404.html`（= index.html 副本）让 `/content-generate` 之类的路径回落到应用。
+  已由 `vite-plugin-hosted-public.mjs` 每次构建自动生成 —— 别手改，否则会引用过期 bundle。
+  副作用：`/api/*` 也会回落成 HTML，所以 api-shim 没装上时会静默拿到 HTML。
 
 - **不能开 `emptyOutDir`**：一次清空 50+ 个历史 bundle 会被工作区的批量删除保护拦下，
   构建直接失败。改成 `scripts/build-hosted.mjs` 每轮只清理 40 个旧 bundle。
