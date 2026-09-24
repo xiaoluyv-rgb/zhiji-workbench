@@ -35,7 +35,9 @@
     "deploy:llm-proxy": "node scripts/deploy-llm-proxy.mjs",
     "deploy:kb": "node scripts/deploy-fn.mjs kb",
     "seed:kb": "node scripts/seed-kb.mjs",
-    "deploy:fn": "node scripts/deploy-fn.mjs"
+    "deploy:fn": "node scripts/deploy-fn.mjs",
+    "materials:scan": "node scripts/refresh-materials.mjs",
+    "site:update": "npm run materials:scan && npm run deploy:cloudbase"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.3.0",

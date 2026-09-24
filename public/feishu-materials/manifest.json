@@ -1,11 +1,11 @@
 {
-  "syncedAt": "2026-09-14T08:38:44.493Z",
-  "source": "feishu",
+  "syncedAt": "2026-09-24T08:07:21.496Z",
+  "source": "本地目录扫描（scripts/refresh-materials.mjs）",
   "spaceId": "7664887113942338523",
   "spaceName": "智己车型参考图库",
   "brand": "智己",
   "rootNodeToken": "Dtm1w5qB1iYuS8knvoEcIugcnUb",
-  "total": 112,
+  "total": 115,
   "models": {
     "L6": {
       "title": "智己L6",
@@ -13,6 +13,22 @@
       "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg",
       "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/PggEwRu2Gia9AjkLD2Cc3NUDn2f",
       "images": [
+        {
+          "name": "3df7243468a284dbf334066f0c347092.jpg",
+          "fileToken": "",
+          "caption": "3df7243468a284dbf334066f0c347092",
+          "size": 164011,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
+        {
+          "name": "img_v3_0214o_5464c0ac-9e7d-41a1-8c22-09e0a383d49g.png",
+          "fileToken": "",
+          "caption": "img_v3_0214o_5464c0ac-9e7d-41a1-8c22-09e0a383d49g",
+          "size": 1792792,
+          "nodeToken": "PggEwRu2Gia9AjkLD2Cc3NUDn2f",
+          "objToken": "CV0Ed4KXho4rCUxGyGOcZIgtnCg"
+        },
         {
           "name": "L6-01.jpg",
           "fileToken": "Q0aIbC7sQoVDyqxpYOgcOyA5nOd",
@@ -557,6 +573,14 @@
       "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb",
       "nodeUrl": "https://ocntszr0j74l.feishu.cn/wiki/Gi8mw3D92ilZpnkBz9ocS5wEnlf",
       "images": [
+        {
+          "name": "3df7243468a284dbf334066f0c347092.jpg",
+          "fileToken": "",
+          "caption": "3df7243468a284dbf334066f0c347092",
+          "size": 164011,
+          "nodeToken": "Gi8mw3D92ilZpnkBz9ocS5wEnlf",
+          "objToken": "N3lOd3RrWoHRFax4rlkcVRvEnXb"
+        },
         {
           "name": "LS8-01.jpg",
           "fileToken": "NgdZbCpRJouqowxUvDicKQ2RnQh",
