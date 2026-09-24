@@ -90,9 +90,23 @@ export async function vfReaddir(target, options = {}) {
   return options.withFileTypes ? entries : entries.map((e) => e.name);
 }
 
-export function vfWriteFile() {
-  // 托管模式只读：历史记录走 localStorage，不落虚拟盘。
+export function vfWriteFile(target, content) {
+  // 早前这里直接 return（托管模式只读）。现在必须真写：云端知识库拉下来的车型参数
+  // 靠它覆盖进虚拟盘，ai-adapter 才会用最新参数写稿（否则改了云端参数还要重新构建）。
+  // 只动内存里的 Map，不碰快照本身，刷新页面即回到快照状态。
+  files.set(normalize(target), typeof content === "string" ? content : String(content ?? ""));
   return Promise.resolve();
+}
+
+export function vfDeleteFile(target) {
+  // 配合 vfWriteFile：云端把某车型下架时，把它从虚拟盘删掉，下拉和生成里都不再出现。
+  return files.delete(normalize(target));
+}
+
+export function vfListPaths(prefix) {
+  // 给 hosted 层用：找出快照里某个目录下的所有文件（例如 wiki/car-model 下有哪些车型）。
+  const norm = normalize(prefix).replace(/\/+$/, "");
+  return [...files.keys()].filter((k) => k.startsWith(norm + "/"));
 }
 
 export function vfMkdir() {

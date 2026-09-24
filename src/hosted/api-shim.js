@@ -11,7 +11,13 @@
 // 只在 VITE_WORKBENCH_HOSTED === "true" 的构建里生效。
 
 import snapshotJson from "./snapshot.json";
-import { installSnapshot, getSnapshot } from "./virtual-fs.js";
+import {
+  installSnapshot,
+  getSnapshot,
+  vfWriteFile,
+  vfDeleteFile,
+  vfListPaths,
+} from "./virtual-fs.js";
 import { installProcessShim, isConfigured, getApiKey, llmProxy, llmToken } from "./env.js";
 import {
   generateContent,
@@ -22,6 +28,130 @@ import {
 
 const VAULT_ROOT = "/vault";
 const HISTORY_KEY = "workbench.hosted.history";
+const KB_API = String(import.meta.env?.VITE_KB_API || "").replace(/\/+$/, "");
+const KB_ADMIN_KEY = "workbench.hosted.kbAdmin";
+const CAR_MODEL_DIR = `${VAULT_ROOT}/wiki/car-model`;
+
+// 车型名字归一：快照文件名「智己 L6 官方参数.md」和云端条目标题
+// 「智己 L6 官方参数（演示数据）」去噪后都是「智己 L6」，靠它才能精准覆盖而不是并存两条。
+function cleanCarName(value) {
+  return String(value || "")
+    .replace(/\.md$/i, "")
+    .replace(/[（(]\s*演示数据\s*[)）]/g, "")
+    .replace(/官方参数/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// 一条云端车型参数可能对应哪些车型名（标题优先，model 字段兜底并补品牌前缀）。
+function carNameCandidates(item) {
+  const out = [];
+  const seen = new Set();
+  const push = (v) => {
+    const name = cleanCarName(v);
+    if (name && !seen.has(name)) {
+      seen.add(name);
+      out.push(name);
+    }
+  };
+  push(item?.title);
+  const model = cleanCarName(item?.model);
+  if (model) {
+    push(model);
+    // 云端 model 常省略品牌（"L6"），而快照里是「智己 L6」，补上才能对上
+    if (!/智己|奔驰|问界|极氪|大众/.test(model)) push(`智己 ${model}`);
+  }
+  return out;
+}
+
+let cloudModelsInflight = null;
+
+async function fetchKbItems() {
+  let token = "";
+  try {
+    token = localStorage.getItem(KB_ADMIN_KEY) || "";
+  } catch {
+    /* 隐私模式 */
+  }
+  // 登了管理就用 /kb/all，这样连「下架」也能同步过来；否则只拿上架的。
+  const url = token ? `${KB_API}/all` : `${KB_API}/list`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+  try {
+    const resp = await originalFetch(url, {
+      headers: token ? { "x-admin-token": token } : {},
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return Array.isArray(data?.items) ? data.items : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// 把云端车型参数覆盖进虚拟盘，让 ai-adapter 用最新参数写稿。
+// 云端没配 / 拉不到 / 超时 → 什么都不做，快照原样生效（绝不让生成挂掉）。
+async function syncCloudCarModels() {
+  if (!KB_API) return { applied: 0, source: "no-kb" };
+  const items = await fetchKbItems();
+  if (!items) return { applied: 0, source: "unavailable" };
+
+  const cars = items.filter((it) => it.type === "car");
+  // 保底：云端一条车型都没有（接口异常 / 数据被清空）时绝对不动快照，
+  // 否则一次抽风就会把车型下拉清空、全员没法生成。
+  if (!cars.length) return { applied: 0, removed: 0, source: "empty-cloud" };
+
+  const online = cars.filter((it) => (it.status || "online") !== "offline");
+
+  // 快照里已有的车型文件，按去噪后的名字建索引
+  const existing = new Map();
+  for (const p of vfListPaths(CAR_MODEL_DIR)) {
+    if (!p.endsWith(".md")) continue;
+    existing.set(cleanCarName(p.slice(p.lastIndexOf("/") + 1)), p);
+  }
+
+  // 以云端为准：上架的写进去，云端没有的（＝被下架 / 被删）从虚拟盘移除。
+  // ⚠️ 不能只按 offline 名单删 —— 未登录管理端走的是 /kb/list，它压根不返回下架条目，
+  //    那份名单永远是空的，「下架」就成了摆设。
+  let written = 0;
+  const keep = new Set();
+  for (const it of online) {
+    const content = String(it.content || "").trim();
+    if (!content) continue;
+    const names = carNameCandidates(it);
+    if (!names.length) continue;
+    const target = existing.get(names[0]) || existing.get(names[names.length - 1]);
+    const file = target || `${CAR_MODEL_DIR}/${names[0]} 官方参数.md`;
+    await vfWriteFile(file, content);
+    existing.set(names[0], file);
+    keep.add(file);
+    written += 1;
+  }
+
+  let removed = 0;
+  for (const p of vfListPaths(CAR_MODEL_DIR)) {
+    if (!p.endsWith(".md") || keep.has(p)) continue;
+    if (vfDeleteFile(p)) removed += 1;
+  }
+
+  return { applied: written, removed, source: "cloud" };
+}
+
+// 每次生成/取车型列表前都跑一次（保证改完立刻生效），并发时共用同一个请求。
+async function ensureCloudCarModels() {
+  if (!KB_API) return null;
+  if (cloudModelsInflight) return cloudModelsInflight;
+  cloudModelsInflight = syncCloudCarModels()
+    .catch(() => ({ applied: 0, source: "error" }))
+    .finally(() => {
+      cloudModelsInflight = null;
+    });
+  return cloudModelsInflight;
+}
 
 let originalFetch = null;
 let installed = false;
@@ -182,6 +312,7 @@ async function handleApi(method, pathname, searchParams, body) {
 
   // 内容生成：车型下拉
   if (method === "GET" && pathname === "/api/content/models") {
+    await ensureCloudCarModels();
     const models = await loadCarModels(VAULT_ROOT);
     return jsonResponse({ items: models.map((m) => ({ id: m.id, name: m.name, specs: m.specs })) });
   }
@@ -192,6 +323,8 @@ async function handleApi(method, pathname, searchParams, body) {
       return errorResponse(401, "AI_LLM_NOT_CONFIGURED", "请先在「设置」里填入你自己的 API Key，再回来生成。");
     }
     try {
+      // 先把云端最新车型参数覆盖进虚拟盘，AI 才会用你刚改过的参数写稿
+      await ensureCloudCarModels();
       const result = await generateContent(VAULT_ROOT, {
         mode: body.mode || "A",
         model: body.model,
@@ -265,7 +398,8 @@ async function handleApi(method, pathname, searchParams, body) {
 
   // 知识库
   if (method === "GET" && pathname === "/api/knowledge") {
-    return jsonResponse(await loadKnowledge(VAULT_ROOT));
+    await ensureCloudCarModels();
+  return jsonResponse(await loadKnowledge(VAULT_ROOT));
   }
   if (method === "POST" && pathname === "/api/knowledge") {
     return errorResponse(501, "HOSTED_READ_ONLY", "网页版不支持写回个人知识库，请在本地版操作。");
