@@ -344,8 +344,22 @@ function buildNote(model, specs, angle, index, material = null) {
 
 // ---------- 内容生成：真实 LLM 引擎（OpenAI 兼容，必须配置 key） ----------
 
+// ⚠️ 本文件里禁止再直接写 `process.env.XXX`，一律用 envValue()。
+// Vite 打浏览器包时会把 `process.env` 静态折叠成空对象常量（产物里就是 `var q={}`），
+// 压缩后读的是那个常量而不是 globalThis.process —— 于是 hosted/env.js 装的
+// process shim 完全失效，ai-adapter 永远拿不到 Key，直接静默退回模板。
+// 这正是「网页版填了 Key 却一直出预设内容」的真正根因。
+// 改成运行时求值：浏览器读 globalThis.__WB_PROCESS_ENV__（由 installProcessShim 注入），
+// Node 照旧读 process.env，两端一致且不受编译期替换影响。
+function envValue(key) {
+  const hosted = typeof globalThis !== "undefined" ? globalThis.__WB_PROCESS_ENV__ : null;
+  if (hosted && typeof hosted === "object") return hosted[key];
+  const nodeEnv = typeof process !== "undefined" ? process.env : null;
+  return nodeEnv ? nodeEnv[key] : undefined;
+}
+
 function contentLlmConfig() {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = envValue("OPENAI_API_KEY");
   if (!apiKey) {
     const error = new Error("未配置 OPENAI_API_KEY。请在项目根目录 .env 中配置后重启 dev server。");
     error.code = "AI_LLM_NOT_CONFIGURED";
@@ -353,8 +367,8 @@ function contentLlmConfig() {
   }
   return {
     apiKey,
-    baseUrl: (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, ""),
-    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    baseUrl: (envValue("OPENAI_BASE_URL") || "https://api.openai.com/v1").replace(/\/$/, ""),
+    model: envValue("OPENAI_MODEL") || "gpt-4o-mini",
   };
 }
 
@@ -661,7 +675,7 @@ export async function generateContent(vaultRoot, opts = {}) {
   );
 
   const startedAt = Date.now();
-  const hasKey = Boolean(process.env.OPENAI_API_KEY);
+  const hasKey = Boolean(envValue("OPENAI_API_KEY"));
   let notes = [];
   let demoMode = false;
   let llmFallback = false;
@@ -1050,7 +1064,7 @@ async function buildTitleSuggestions({ title, model, officialParams, benefit, ho
     : "";
   const fallback = ruleBasedTitles({ model, officialParams, benefit, hooks, title });
 
-  if (!process.env.OPENAI_API_KEY) return { items: fallback, source: "rule" };
+  if (!envValue("OPENAI_API_KEY")) return { items: fallback, source: "rule" };
   try {
     const system = `你是小红书汽车内容标题优化专家，服务智己品牌代运营 KOS。只输出 JSON。
 硬约束：
@@ -1378,7 +1392,7 @@ function resolveTargetSmart(text, models, benefits, model) {
 
 // 规则识别不到时，让 LLM 从候选车型里判一个；判不出来就返回 null（绝不瞎猜）
 async function detectModelByLLM(text, models, benefits) {
-  if (!process.env.OPENAI_API_KEY || !models.length) return null;
+  if (!envValue("OPENAI_API_KEY") || !models.length) return null;
   // 把每款车的定位与关键参数喂给模型，让它有据可依，而不是凭感觉猜
   const catalog = models
     .map((m) => {

@@ -812,7 +812,9 @@ export function ContentGeneratePage() {
                 <div className="cg-viral-banner">
                   <IconSparkles aria-hidden="true" size={16} />
                   <span>
-                    爆文库已接入 · 来源：飞书创作知识库·爆文合集（{result.viralLibrary.count} 条真实标题钩子，已按车型注入提示词）
+                    爆文库已接入 · 来源：
+                    {import.meta.env.VITE_WORKBENCH_HOSTED === "true" ? "创作知识库·爆文合集（随站点发布的快照）" : "飞书创作知识库·爆文合集"}
+                    （{result.viralLibrary.count} 条真实标题钩子，已按车型注入提示词）
                   </span>
                 </div>
               ) : null}

@@ -130,4 +130,9 @@ export function installProcessShim() {
     off: () => {},
     emit: () => false,
   };
+  // ⚠️ 这个才是真正生效的那个。Vite 打浏览器包时会把 `process.env` 静态折叠成空对象
+  // （产物里能看到 `var q={}`），所以上面那份 process shim 对 ai-adapter 无效 ——
+  // 它读的是编译期常量。ai-adapter 改用 envValue() 运行时读 globalThis.__WB_PROCESS_ENV__，
+  // 这里必须挂上，否则网页版永远拿不到 Key，会静默退回预置模板。
+  globalThis.__WB_PROCESS_ENV__ = envProxy;
 }

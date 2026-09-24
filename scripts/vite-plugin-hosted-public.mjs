@@ -127,6 +127,12 @@ export function hostedPublicAssetsPlugin(root) {
         routes += 1;
       }
       console.log(`[hosted-assets] 已生成 ${routes} 条路由的 index.html 副本（避免刷新子页面 404）`);
+
+      // 404.html：腾讯云静态托管没有 SPA 兜底开关，但会用它作为「错误文档」。
+      // 有它，/任意路径 才会回落到 index.html 而不是真 404；没它，刷新子页面直接白屏。
+      // ⚠️ 必须每次构建都重新生成，否则它引用的还是上一版的 bundle hash。
+      await writeFile(path.join(outDir, "404.html"), html, "utf8");
+      console.log("[hosted-assets] 已生成 404.html（静态托管的 SPA 兜底）");
     },
   };
 }

@@ -87,7 +87,14 @@ export function SystemPage() {
             </div>
             <div className="system-kv">
               <dt>文件同步</dt>
-              <dd>{isLoading ? "—" : sync?.status || "—"}</dd>
+              {/* 网页版没有本地 Vault，同步状态恒为「连接中」会让人以为坏了 */}
+              <dd>
+                {import.meta.env.VITE_WORKBENCH_HOSTED === "true"
+                  ? "网页版 · 知识走云端知识库"
+                  : isLoading
+                    ? "—"
+                    : sync?.status || "—"}
+              </dd>
             </div>
             <div className="system-kv">
               <dt>索引版本</dt>

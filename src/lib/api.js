@@ -489,7 +489,8 @@ export function generateContent(payload) {
   return request("/api/content/generate", {
     method: "POST",
     body: JSON.stringify(payload),
-    timeout: 30_000,
+    // 分批调 LLM：12 条实测 25.6s，30s 会贴线被打断；一次要 30 条要一分钟以上。
+    timeout: 180_000,
   });
 }
 

@@ -150,10 +150,18 @@ export function AppShell({ children, onOpenSearch, sync }) {
         </div>
 
         <div className="sidebar__bottom">
-          <div className={`sidebar__sync sidebar__sync--${sync?.status || "connecting"}`}>
-            <span aria-hidden="true" />
-            <span>{sync?.status === "watching" ? "文件已实时同步" : sync?.status === "rebuilding" || sync?.status === "pending" ? "正在同步文件" : "正在连接文件同步"}</span>
-          </div>
+          {/* 网页版没有本地 Vault / 飞书同步这回事，再显示「正在连接文件同步」只会让人以为坏了 */}
+          {hostedWorkbench ? (
+            <div className="sidebar__sync sidebar__sync--watching">
+              <span aria-hidden="true" />
+              <span>云端知识库已连接</span>
+            </div>
+          ) : (
+            <div className={`sidebar__sync sidebar__sync--${sync?.status || "connecting"}`}>
+              <span aria-hidden="true" />
+              <span>{sync?.status === "watching" ? "文件已实时同步" : sync?.status === "rebuilding" || sync?.status === "pending" ? "正在同步文件" : "正在连接文件同步"}</span>
+            </div>
+          )}
           <NavLink
             className="sidebar__settings"
             onClick={() => setMobileOpen(false)}
